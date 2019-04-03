@@ -21,10 +21,10 @@ public class ContactDao {
     }
 
     public void findById(int id) {
-        for (int index = 0; index < store.length; index++) {
-            if (index == id) {
+        for (int argument = 0; argument < store.length; argument++) {
+            if (store[argument].getId() == id) {
                 System.out.print("This contact found by your ID: ");
-                System.out.println(store[index].toString());
+                System.out.println(store[argument].toString());
                 break;
             }
         }
@@ -37,10 +37,10 @@ public class ContactDao {
     }
 
     public void deleteById(int id) {
-        for (int index = 0; index < store.length; index++) {
-            if (index == id) {
-                store[index] = null;
-                System.out.println("Contact with ID = " + index + " deleted.");
+        for (int argument = 0; argument < store.length; argument++) {
+            if (store[argument].getId() == id) {
+                store[argument] = null;
+                System.out.println("Contact with ID = " + id + " deleted.");
                 break;
             }
         }
@@ -58,13 +58,14 @@ public class ContactDao {
     }
 
     public void deleteContact(Contact contact) {
-        for(int argument = 0; argument < store.length; argument++){
-            if(store[argument].getId() == contact.getId()){
+        for (int argument = 0; argument < store.length; argument++) {
+            if (store[argument].equals(contact)) {
                 store[argument] = null;
                 System.out.println("Your contact deleted");
             }
         }
     }
+
 
     public Contact[] getStore() {
         return store;
