@@ -1,7 +1,7 @@
-import service.CommandLineService;
+import service.impl.CommandLineServiceImpl;
 
 public class Main {
     public static void main(String[] args) {
-        CommandLineService.run();
+        CommandLineServiceImpl.run();
     }
 }

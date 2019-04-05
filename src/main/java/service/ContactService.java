@@ -1,35 +1,19 @@
 package service;
 
-import dao.ContactDao;
 import entity.Contact;
 
 import java.util.Scanner;
 
-public class ContactService {
+public interface ContactService {
 
-    private ContactDao contactDao;
+    void addContact(Scanner scanner);
 
-    public ContactService(ContactDao contactDao) {
-        this.contactDao = contactDao;
-    }
+    void updateContact(Scanner scanner);
 
-    public void addContact(Scanner scanner) {
-        Contact contact = new Contact();
+    void deleteContact(Scanner scanner);
 
-        System.out.println("Enter please name of your contact person:");
-        String name = scanner.next();
-        contact.setName(name);
+    void showAllContacts(Scanner scanner);
 
-        System.out.println("Enter please sur name of your contact person:");
-        String surName = scanner.next();
-        contact.setSurNume(surName);
+    void exit(Scanner scanner);
 
-        System.out.println("Enter please phone number of your contact contact:");
-        String phoneNumber = scanner.next().replaceAll("[^0-9+]", "");
-        contact.setPhoneNumber(phoneNumber);
-
-        contactDao.saveContact(contact);
-
-        System.out.println("Thank you for saving your contact in this contact book.");
-    }
 }

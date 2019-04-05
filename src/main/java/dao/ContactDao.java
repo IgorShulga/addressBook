@@ -2,73 +2,18 @@ package dao;
 
 import entity.Contact;
 
-public class ContactDao {
+public interface ContactDao {
 
-    public static int generator = 0;
+    void saveContact(Contact contact);
 
-    Contact[] store = new Contact[10];
+    void deleteContactById(int id);
 
-    public void saveContact(Contact contact) {
-        for (Contact elementStore : store) {
-            if (elementStore == null) {
-                contact.setId(++generator);
-                elementStore = contact;
-                System.out.println("This contact was added in your contact book.");
-                System.out.println(contact.toString());
-                break;
-            }
-        }
-    }
+    void deleteContactByEntity (Contact contact);
 
-    public void findById(int id) {
-        for (Contact elementStore : store) {
-            if (elementStore.getId() == id) {
-                System.out.print("This contact found by your ID: ");
-                System.out.println(elementStore.toString());
-                break;
-            }
-        }
-    }
+    void showAllContacts();
 
-    public void showAllContacts() {
-        for (Contact elementStore : store) {
-            System.out.println(elementStore.toString());
-        }
-    }
+    Contact updataContact(int contactId);
 
-    public void deleteById(int id) {
-        for (Contact elementStore : store) {
-            if (elementStore.getId() == id) {
-                elementStore = null;
-                System.out.println("Contact with ID = " + id + " deleted.");
-                break;
-            }
-        }
-    }
+    Contact findContactById(int contactId);
 
-    public void updataContact(Contact contact) {
-        for (Contact elementStore : store) {
-            if (elementStore.getId() == contact.getId()) {
-                elementStore = contact;
-                System.out.print("Your contact updated in your address book: ");
-                System.out.println(contact.toString());
-                break;
-            }
-        }
-    }
-
-    public void deleteContact(Contact contact) {
-        for (Contact elementStore : store) {
-            if (elementStore.equals(contact)) {
-                elementStore = null;
-                System.out.println("Your contact deleted");
-                break;
-            }
-        }
-    }
-
-
-    public Contact[] getStore() {
-        return store;
-    }
 }
