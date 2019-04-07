@@ -49,9 +49,11 @@ public class ContactDaoImpl implements ContactDao {
     }
 
 
-    public void showAllContacts() {
-        for (Contact elementStore : store) {
-            System.out.println(elementStore.toString());
+    public void showContacts() {
+        for (Contact contactStore : store) {
+            if(contactStore != null) {
+                System.out.println(contactStore);
+            }
         }
     }
 
@@ -74,7 +76,7 @@ public class ContactDaoImpl implements ContactDao {
             }
         }
         System.out.print("Your contact updated in your address book: ");
-        System.out.println(updatedContact.toString());
+        System.out.println(updatedContact);
         return updatedContact;
     }
 
@@ -87,6 +89,7 @@ public class ContactDaoImpl implements ContactDao {
             }
         }
     }
+
 
     public Contact[] getStore() {
         return store;

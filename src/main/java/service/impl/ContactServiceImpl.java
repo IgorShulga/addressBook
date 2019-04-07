@@ -12,7 +12,7 @@ public class ContactServiceImpl implements ContactService {
     private ContactDaoImpl contactDaoImpl;
 
     public ContactServiceImpl(ContactDao contactDao) {
-        this.contactDaoImpl = contactDaoImpl;
+        this.contactDaoImpl = (ContactDaoImpl) contactDao;
     }
 
     @Override
@@ -38,7 +38,7 @@ public class ContactServiceImpl implements ContactService {
 
     @Override
     public void updateContact(Scanner scanner) {
-        contactDaoImpl.showAllContacts();
+
         System.out.println("Enter please contacts ID what you want update");
         int contactId = scanner.nextInt();
         contactDaoImpl.updataContact(contactId);
@@ -46,7 +46,6 @@ public class ContactServiceImpl implements ContactService {
 
     @Override
     public void deleteContact(Scanner scanner) {
-        contactDaoImpl.showAllContacts();
         System.out.println("Enter please contacts ID what you want delete");
         int contactIdForDelete = scanner.nextInt();
         //  delete method 1
@@ -57,7 +56,7 @@ public class ContactServiceImpl implements ContactService {
 
     @Override
     public void showAllContacts(Scanner scanner) {
-        contactDaoImpl.showAllContacts();
+        contactDaoImpl.showContacts();
     }
 
     @Override

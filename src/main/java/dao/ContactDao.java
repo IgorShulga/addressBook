@@ -10,7 +10,7 @@ public interface ContactDao {
 
     void deleteContactByEntity (Contact contact);
 
-    void showAllContacts();
+    void showContacts();
 
     Contact updataContact(int contactId);
 
