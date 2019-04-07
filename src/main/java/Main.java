@@ -1,8 +1,10 @@
 import service.CommandLIneService;
+import service.impl.CommandLineServiceImpl;
 
 public class Main {
 
     public static void main(String[] args) {
-        CommandLIneService.start();
+        CommandLineServiceImpl.start();
     }
+
 }
