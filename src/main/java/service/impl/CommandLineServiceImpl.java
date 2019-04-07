@@ -20,7 +20,7 @@ public class CommandLineServiceImpl implements CommandLIneService {
     }
 
     public void start() {
-        run();
+//        run();
     }
 
     public void run() {
