@@ -11,7 +11,7 @@ public class CommandLineServiceImpl implements CommandLIneService {
 
     private static final ContactServiceImpl service = new ContactServiceImpl(new ContactDaoImpl());
 
-    public static void showMenu() {
+    public void showMenu() {
         System.out.println("1.Add contact.");
         System.out.println("2.Update contact.");
         System.out.println("3.Delete contact.");
@@ -19,7 +19,11 @@ public class CommandLineServiceImpl implements CommandLIneService {
         System.out.println("0.Exit.;");
     }
 
-    public static void run() {
+    public void start() {
+        run();
+    }
+
+    public void run() {
         boolean exit = true;
         do {
             System.out.println("Choose your wish:");
@@ -31,15 +35,15 @@ public class CommandLineServiceImpl implements CommandLIneService {
                     break;
                 }
                 case 2: {
-
+                    service.updateContact(scanner);
                     break;
                 }
                 case 3: {
-
+                    service.deleteContact(scanner);
                     break;
                 }
                 case 4: {
-
+                    service.showAllContacts(scanner);
                     break;
                 }
                 case 0: {

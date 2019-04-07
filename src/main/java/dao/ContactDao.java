@@ -16,4 +16,6 @@ public interface ContactDao {
 
     Contact findContactById(int contactId);
 
+    Contact findContactByName(String name);
+
 }

@@ -23,16 +23,29 @@ public class ContactDaoImpl implements ContactDao {
     }
 
     public Contact findContactById(int id) {
-        Contact foundContact = null;
+        Contact foundContactById = null;
         for (Contact elementStore : store) {
             if (elementStore.getId() == id) {
-                foundContact = elementStore;
-                System.out.print("This contact found by your ID: ");
-                System.out.println(elementStore.toString());
+                foundContactById = elementStore;
                 break;
             }
         }
-        return foundContact;
+        System.out.print("This contact found by your ID: ");
+        System.out.println(foundContactById.toString());
+        return foundContactById;
+    }
+
+    public Contact findContactByName(String name) {
+        Contact foundContactByName = null;
+        for (Contact elementStore : store) {
+            if (elementStore.getName().equals(name)) {
+                foundContactByName = elementStore;
+                break;
+            }
+        }
+        System.out.print("This contact found by name: ");
+        System.out.println(foundContactByName.toString());
+        return foundContactByName;
     }
 
 
@@ -57,11 +70,11 @@ public class ContactDaoImpl implements ContactDao {
         for (Contact elementStore : store) {
             if (elementStore.getId() == contactId) {
                 elementStore = updatedContact;
-                System.out.print("Your contact updated in your address book: ");
-                System.out.println(updatedContact.toString());
                 break;
             }
         }
+        System.out.print("Your contact updated in your address book: ");
+        System.out.println(updatedContact.toString());
         return updatedContact;
     }
 

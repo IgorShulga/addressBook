@@ -38,17 +38,26 @@ public class ContactServiceImpl implements ContactService {
 
     @Override
     public void updateContact(Scanner scanner) {
-
+        contactDaoImpl.showAllContacts();
+        System.out.println("Enter please contacts ID what you want update");
+        int contactId = scanner.nextInt();
+        contactDaoImpl.updataContact(contactId);
     }
 
     @Override
     public void deleteContact(Scanner scanner) {
-
+        contactDaoImpl.showAllContacts();
+        System.out.println("Enter please contacts ID what you want delete");
+        int contactIdForDelete = scanner.nextInt();
+        //  delete method 1
+        contactDaoImpl.deleteContactById(contactIdForDelete);
+        //  delete method 2
+//        contactDaoImpl.deleteContactByEntity(contactDaoImpl.getStore()[contactIdForDelete]);
     }
 
     @Override
     public void showAllContacts(Scanner scanner) {
-
+        contactDaoImpl.showAllContacts();
     }
 
     @Override
