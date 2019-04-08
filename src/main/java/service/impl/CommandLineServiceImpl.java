@@ -11,7 +11,6 @@ public class CommandLineServiceImpl implements CommandLIneService {
 
     private static final ContactServiceImpl service = new ContactServiceImpl(new ContactDaoImpl());
 
-
     public static void start() {
         CommandLIneService.run(scanner, service);
     }

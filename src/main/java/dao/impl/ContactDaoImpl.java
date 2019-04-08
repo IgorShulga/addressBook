@@ -22,6 +22,17 @@ public class ContactDaoImpl implements ContactDao {
         }
     }
 
+    @Override
+    public void deleteContactById(int id) {
+        for (int argument = 0; argument < store.length; argument++) {
+            if (store[argument].getId() == id) {
+                System.out.println("You deleting this contact: " + store[argument]);
+                store[argument] = null;
+                break;
+            }
+        }
+    }
+
     public Contact findContactById(int id) {
         Contact foundContactById = null;
         for (Contact elementStore : store) {
@@ -43,53 +54,41 @@ public class ContactDaoImpl implements ContactDao {
                 break;
             }
         }
-        System.out.print("This contact found by name: ");
-        System.out.println(foundContactByName.toString());
+        System.out.println("This contact found by name: " + foundContactByName.toString());
         return foundContactByName;
     }
 
 
     public void showContacts() {
         for (Contact contactStore : store) {
-            if(contactStore != null) {
+            if (contactStore != null) {
                 System.out.println(contactStore);
             }
         }
     }
 
-    public void deleteContactById(int id) {
-        for (Contact elementStore : store) {
-            if (elementStore.getId() == id) {
-                elementStore = null;
-                System.out.println("Contact with ID = " + id + " deleted.");
-                break;
-            }
-        }
-    }
-
-    public Contact updataContact(int contactId) {
-        Contact updatedContact = null;
+    @Override
+    public Contact updateContactById(int contactId) {
+        Contact contactTemp = null;
         for (Contact elementStore : store) {
             if (elementStore.getId() == contactId) {
-                elementStore = updatedContact;
+                System.out.println("You updating this contact: " + elementStore.toString());
+                contactTemp = elementStore;
                 break;
             }
         }
-        System.out.print("Your contact updated in your address book: ");
-        System.out.println(updatedContact);
-        return updatedContact;
+        return contactTemp;
     }
 
     public void deleteContactByEntity(Contact contact) {
-        for (Contact elementStore : store) {
-            if (elementStore.equals(contact)) {
-                elementStore = null;
-                System.out.println("Your contact deleted");
+        for (int argument = 0; argument < store.length; argument++) {
+            if (store[argument].equals(contact)) {
+                System.out.println("You deleting this contact: " + store[argument].toString());
+                store[argument] = null;
                 break;
             }
         }
     }
-
 
     public Contact[] getStore() {
         return store;

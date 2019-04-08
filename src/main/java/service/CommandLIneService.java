@@ -6,6 +6,10 @@ import java.util.Scanner;
 
 public interface CommandLIneService {
 
+    /**
+     * Static method with its implementation
+     * method displayed actions menu.
+     */
     static void showMenu() {
         System.out.println("1.Add contact.");
         System.out.println("2.Update contact.");
@@ -15,6 +19,13 @@ public interface CommandLIneService {
     }
 
 
+    /**
+     * Static method with its implementation
+     * it is start work application
+     *
+     * @param scanner takes keyboard input
+     * @param service pass scanner for implementation
+     */
     static void run(Scanner scanner, ContactServiceImpl service) {
         boolean exit = true;
         do {
