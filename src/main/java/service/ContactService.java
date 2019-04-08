@@ -31,12 +31,4 @@ public interface ContactService {
      * @param scanner takes keyboard input
      */
     void showAllContacts(Scanner scanner);
-
-    /**
-     * This method finish of app and exit from it.
-     *
-     * @param scanner takes keyboard input
-     */
-    void exit(Scanner scanner);
-
 }

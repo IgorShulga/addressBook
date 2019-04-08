@@ -42,14 +42,41 @@ public class ContactServiceImpl implements ContactService {
         System.out.println("Enter please contacts ID what you want update");
         int contactId = scanner.nextInt();
         Contact newContact = contactDaoImpl.updateContactById(contactId);
-        System.out.println("Please, update name of your contact person:");
-        newContact.setName(scanner.next());
-        System.out.println("Please, update sur name of your contact person:");
-        newContact.setSurNume(scanner.next());
-        System.out.println("Please, update phone number of your contact person:");
-        newContact.setPhoneNumber(scanner.next());
-        System.out.print("Your contact udated: ");
-        System.out.println(newContact.toString());
+        boolean exit = true;
+        do {
+            System.out.println("Choose your field for update:");
+            System.out.println("1 - update Name");
+            System.out.println("2 - update Sur name");
+            System.out.println("3 - update phone number");
+            System.out.println("0 - finish update");
+            int numberOfMenu = scanner.nextInt();
+            switch (numberOfMenu) {
+                case 1: {
+                    System.out.println("Please update name of your contact person:");
+                    newContact.setName(scanner.next());
+                    break;
+                }
+                case 2: {
+                    System.out.println("Please update sur name of your contact person:");
+                    newContact.setSurNume(scanner.next());
+                    break;
+                }
+                case 3: {
+                    System.out.println("Please, update phone number of your contact person:");
+                    newContact.setPhoneNumber(scanner.next());
+                    break;
+                }
+                case 0: {
+                    System.out.print("Your contact udated: ");
+                    System.out.println(newContact.toString());
+                    exit = false;
+                    break;
+                }
+                default: {
+                    System.out.println("Sorry. You enter wrong number of menu. Choose another number.");
+                }
+            }
+        } while (exit);
     }
 
     @Override
@@ -63,10 +90,5 @@ public class ContactServiceImpl implements ContactService {
     @Override
     public void showAllContacts(Scanner scanner) {
         contactDaoImpl.showContacts();
-    }
-
-    @Override
-    public void exit(Scanner scanner) {
-
     }
 }
