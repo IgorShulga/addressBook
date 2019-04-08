@@ -7,8 +7,7 @@ import java.util.Scanner;
 public interface CommandLIneService {
 
     /**
-     * Static method with its implementation
-     * method displayed actions menu.
+     * Method displayed actions menu.
      */
     static void showMenu() {
         System.out.println("1.Add contact.");
@@ -20,8 +19,7 @@ public interface CommandLIneService {
 
 
     /**
-     * Static method with its implementation
-     * it is start work application
+     * Method is start work application
      *
      * @param scanner takes keyboard input
      * @param service pass scanner for implementation
