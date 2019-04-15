@@ -1,23 +1,26 @@
 public class ApplicationException extends Exception {
-    public ApplicationException() {
-        super();
+
+    private String messageOfException;
+    private int code;
+
+    public ApplicationException(int code, String message) {
+        this.code = code;
+        this.messageOfException = message;
     }
 
-    public ApplicationException(String message) {
-        super(message);
+    public String getMessageOfException() {
+        return messageOfException;
     }
 
-    public ApplicationException(String message, Throwable cause) {
-        super(message, cause);
+    public int getCode() {
+        return code;
     }
 
-    public ApplicationException(Throwable cause) {
-        super(cause);
-    }
-
-    protected ApplicationException(String message, Throwable cause,
-                                   boolean enableSuppression,
-                                   boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
+    @Override
+    public String toString() {
+        return "ApplicationException{" +
+                "messageOfException='" + messageOfException + '\'' +
+                ", code=" + code +
+                '}';
     }
 }
