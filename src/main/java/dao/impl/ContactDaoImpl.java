@@ -5,14 +5,15 @@ import entity.Contact;
 import exception.ApplicationException;
 import exception.ResponseCode;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class ContactDaoImpl implements ContactDao {
 
     public static int generator = 0;
 
-    private Contact[] store = new Contact[10];
-//    private List<Contact> store2 = new ArrayList<>();
+    private List<Contact> store = new ArrayList<>();
 
     public void saveContact(Contact contact) throws ApplicationException {
 
