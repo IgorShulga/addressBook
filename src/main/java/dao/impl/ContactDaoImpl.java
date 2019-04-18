@@ -5,8 +5,6 @@ import entity.Contact;
 import exception.ApplicationException;
 import exception.ResponseCode;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 public class ContactDaoImpl implements ContactDao {
@@ -14,13 +12,13 @@ public class ContactDaoImpl implements ContactDao {
     public static int generator = 0;
 
     private Contact[] store = new Contact[10];
-    private List<Contact> store2 = new ArrayList<>();
+//    private List<Contact> store2 = new ArrayList<>();
 
     public void saveContact(Contact contact) throws ApplicationException {
 
         searchSameContact(contact);
         for (int argument = 0; argument < store.length; argument++) {
-            if (store[argument] == null) {
+            if (Objects.isNull(store[argument])) {
                 generator = argument;
                 contact.setId(++generator);
                 store[argument] = contact;
@@ -45,7 +43,7 @@ public class ContactDaoImpl implements ContactDao {
         }
     }
 
-
+    @Override
     public Contact getContactById(int contactId) throws ApplicationException {
         if (isThereId(contactId)) {
             throw new ApplicationException("There isn't this ID", ResponseCode.NOT_CONTENT);
@@ -116,7 +114,7 @@ public class ContactDaoImpl implements ContactDao {
     public Contact updateContactById(int contactId) {
         Contact contactTemp = null;
         for (Contact elementStore : store) {
-            if (Objects.equals(elementStore.getId(), contactId)) {
+            if (elementStore.getId() == contactId) {
                 System.out.println("You updating this contact: " + elementStore.toString());
                 contactTemp = elementStore;
                 break;

@@ -1,7 +1,7 @@
 package exception;
 
 public enum ResponseCode {
-//    NOT_FOUND(404, "This object not found"),
+    NOT_FOUND(404, "This storage is empty"),
     OBJECT_EXIST(302, "This object already exists"),
 //    VALIDATION_ERROR(301, "9999999"),
     WRONG_DATA_TYPE(415, "Your entered wrong type data. "),

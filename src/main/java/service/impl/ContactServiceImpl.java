@@ -40,45 +40,46 @@ public class ContactServiceImpl implements ContactService {
 
     @Override
     public void updateContact(Scanner scanner) throws ApplicationException {
-        contactDaoImpl.showContacts();
-        System.out.println("Enter please contacts ID what you want update");
-        int contactId = scanner.nextInt();
-        Contact contact = contactDaoImpl.getContactById(contactId);
-        boolean exit = true;
-        do {
-            System.out.println("Choose your field for update:");
-            System.out.println("1 - update Name");
-            System.out.println("2 - update Sur name");
-            System.out.println("3 - update phone number");
-            System.out.println("0 - finish update");
-            int numberOfMenu = scanner.nextInt();
-            switch (numberOfMenu) {
-                case 1: {
-                    System.out.println("Please update name of your contact person:");
-                    contact.setName(scanner.next());
-                    break;
+        if (contactDaoImpl.isEmptyStore()) {
+            throw new ApplicationException(ResponseCode.NOT_FOUND);
+        } else {
+            contactDaoImpl.showContacts();
+            System.out.println("Enter please contacts ID what you want update");
+            int contactId = scanner.nextInt();
+            Contact contact = contactDaoImpl.updateContactById(contactId);
+            boolean exit = true;
+            do {
+                System.out.println("Choose field for update: " + "\n" + "1 - update Name" + "\n" + "2 - update Sur name"
+                        + "\n" + "3 - update phone number" + "\n" + "0 - finish update");
+                int numberOfMenu = scanner.nextInt();
+                switch (numberOfMenu) {
+                    case 1: {
+                        System.out.println("Please update name of your contact person:");
+                        contact.setName(scanner.next());
+                        break;
+                    }
+                    case 2: {
+                        System.out.println("Please update sur name of your contact person:");
+                        contact.setSurNume(scanner.next());
+                        break;
+                    }
+                    case 3: {
+                        System.out.println("Please, update phone number of your contact person:");
+                        contact.setPhoneNumber(scanner.next());
+                        break;
+                    }
+                    case 0: {
+                        System.out.print("Your contact udated: ");
+                        System.out.println(contact.toString());
+                        exit = false;
+                        break;
+                    }
+                    default: {
+                        System.out.println("Sorry. You enter wrong number of menu. Choose another number.");
+                    }
                 }
-                case 2: {
-                    System.out.println("Please update sur name of your contact person:");
-                    contact.setSurNume(scanner.next());
-                    break;
-                }
-                case 3: {
-                    System.out.println("Please, update phone number of your contact person:");
-                    contact.setPhoneNumber(scanner.next());
-                    break;
-                }
-                case 0: {
-                    System.out.print("Your contact udated: ");
-                    System.out.println(contact.toString());
-                    exit = false;
-                    break;
-                }
-                default: {
-                    System.out.println("Sorry. You enter wrong number of menu. Choose another number.");
-                }
-            }
-        } while (exit);
+            } while (exit);
+        }
     }
 
     @Override
