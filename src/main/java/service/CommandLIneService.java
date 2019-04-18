@@ -1,5 +1,7 @@
 package service;
 
+import exception.ApplicationException;
+import exception.ResponseCode;
 import service.impl.ContactServiceImpl;
 
 import java.util.Scanner;
@@ -24,39 +26,45 @@ public interface CommandLIneService {
      * @param scanner takes keyboard input
      * @param service pass scanner for implementation
      */
-    static void run(Scanner scanner, ContactServiceImpl service) {
+    static void run(Scanner scanner, ContactServiceImpl service) throws ApplicationException {
+        int numberOfMenu;
         boolean exit = true;
         do {
             System.out.println("Choose your wish:");
             showMenu();
-            int numberOfMenu = scanner.nextInt();
-            switch (numberOfMenu) {
-                case 1: {
-                    service.addContact(scanner);
-                    break;
+            String str = scanner.next();
+            try {
+                if (!str.matches("[0-4]+")) {
+                    throw new ApplicationException("Your entered wrong character", ResponseCode.WRONG_DATA_TYPE);
                 }
-                case 2: {
-                    service.updateContact(scanner);
-                    break;
+                numberOfMenu = Integer.parseInt(str);
+                switch (numberOfMenu) {
+                    case 1: {
+                        service.addContact(scanner);
+                        break;
+                    }
+                    case 2: {
+                        service.updateContact(scanner);
+                        break;
+                    }
+                    case 3: {
+                        service.deleteContact(scanner);
+                        break;
+                    }
+                    case 4: {
+                        service.showAllContacts(scanner);
+                        break;
+                    }
+                    case 0: {
+                        System.out.println("Thank you that use our app. Good bay.");
+                        exit = false;
+                        break;
+                    }
                 }
-                case 3: {
-                    service.deleteContact(scanner);
-                    break;
-                }
-                case 4: {
-                    service.showAllContacts(scanner);
-                    break;
-                }
-                case 0: {
-                    System.out.println("Thank you that use our app. Good bay.");
-                    exit = false;
-                    break;
-                }
-                default: {
-                    System.out.println("Sorry. You enter wrong number of menu. Choose another number.");
-                }
+            } catch (ApplicationException e) {
+                System.out.println(e.getMessageOfException());
             }
-        } while (exit);
+        }
+        while (exit);
     }
-
 }

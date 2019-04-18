@@ -1,6 +1,7 @@
 package dao;
 
 import entity.Contact;
+import exception.ApplicationException;
 
 public interface ContactDao {
 
@@ -9,14 +10,14 @@ public interface ContactDao {
      *
      * @param contact new contact of address book
      */
-    void saveContact(Contact contact);
+    void saveContact(Contact contact) throws ApplicationException;
 
     /**
      * This method delete contact of address book by id of contact.
      *
      * @param id id of contact
      */
-    void deleteContactById(int id);
+    void deleteContactById(int id) throws ApplicationException;
 
     /**
      * This method delete contact of address book.
@@ -44,7 +45,7 @@ public interface ContactDao {
      * @param contactId id of contact
      * @return contact of address book
      */
-    Contact findContactById(int contactId);
+    Contact getContactById(int contactId) throws ApplicationException;
 
     /**
      * This method looking for contact by name.
@@ -52,6 +53,6 @@ public interface ContactDao {
      * @param name name of contact
      * @return contact of address book
      */
-    Contact findContactByName(String name);
+    Contact getContactByName(String name);
 
 }

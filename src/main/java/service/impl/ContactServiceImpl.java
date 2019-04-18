@@ -3,6 +3,8 @@ package service.impl;
 import dao.ContactDao;
 import dao.impl.ContactDaoImpl;
 import entity.Contact;
+import exception.ApplicationException;
+import exception.ResponseCode;
 import service.ContactService;
 
 import java.util.Scanner;
@@ -16,7 +18,7 @@ public class ContactServiceImpl implements ContactService {
     }
 
     @Override
-    public void addContact(Scanner scanner) {
+    public void addContact(Scanner scanner) throws ApplicationException {
         Contact contact = new Contact();
 
         System.out.println("Enter please name of your contact person:");
@@ -37,11 +39,11 @@ public class ContactServiceImpl implements ContactService {
     }
 
     @Override
-    public void updateContact(Scanner scanner) {
+    public void updateContact(Scanner scanner) throws ApplicationException {
         contactDaoImpl.showContacts();
         System.out.println("Enter please contacts ID what you want update");
         int contactId = scanner.nextInt();
-        Contact newContact = contactDaoImpl.updateContactById(contactId);
+        Contact contact = contactDaoImpl.getContactById(contactId);
         boolean exit = true;
         do {
             System.out.println("Choose your field for update:");
@@ -53,22 +55,22 @@ public class ContactServiceImpl implements ContactService {
             switch (numberOfMenu) {
                 case 1: {
                     System.out.println("Please update name of your contact person:");
-                    newContact.setName(scanner.next());
+                    contact.setName(scanner.next());
                     break;
                 }
                 case 2: {
                     System.out.println("Please update sur name of your contact person:");
-                    newContact.setSurNume(scanner.next());
+                    contact.setSurNume(scanner.next());
                     break;
                 }
                 case 3: {
                     System.out.println("Please, update phone number of your contact person:");
-                    newContact.setPhoneNumber(scanner.next());
+                    contact.setPhoneNumber(scanner.next());
                     break;
                 }
                 case 0: {
                     System.out.print("Your contact udated: ");
-                    System.out.println(newContact.toString());
+                    System.out.println(contact.toString());
                     exit = false;
                     break;
                 }
@@ -80,15 +82,20 @@ public class ContactServiceImpl implements ContactService {
     }
 
     @Override
-    public void deleteContact(Scanner scanner) {
-        contactDaoImpl.showContacts();
-        System.out.println("Enter please contacts ID what you want delete");
-        int contactIdForDelete = scanner.nextInt();
-        contactDaoImpl.deleteContactById(contactIdForDelete);
+    public void deleteContact(Scanner scanner) throws ApplicationException {
+        if (contactDaoImpl.isEmptyStore()) {
+            throw new ApplicationException(ResponseCode.NOT_CONTENT.getStr(), ResponseCode.NOT_CONTENT);
+        } else {
+            contactDaoImpl.showContacts();
+            System.out.println("Enter please contacts ID what you want delete");
+            int contactIdForDelete = scanner.nextInt();
+            contactDaoImpl.deleteContactById(contactIdForDelete);
+        }
     }
 
     @Override
     public void showAllContacts(Scanner scanner) {
         contactDaoImpl.showContacts();
     }
+
 }
