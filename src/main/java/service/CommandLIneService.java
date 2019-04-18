@@ -32,10 +32,11 @@ public interface CommandLIneService {
         do {
             System.out.println("Choose your wish:");
             showMenu();
-            String str = scanner.next();
+
             try {
+                String str = scanner.next();
                 if (!str.matches("[0-4]+")) {
-                    throw new ApplicationException("Your entered wrong character", ResponseCode.WRONG_DATA_TYPE);
+                    throw new ApplicationException(ResponseCode.WRONG_DATA_TYPE);
                 }
                 numberOfMenu = Integer.parseInt(str);
                 switch (numberOfMenu) {
@@ -60,9 +61,12 @@ public interface CommandLIneService {
                         exit = false;
                         break;
                     }
+                    default:{
+                        System.out.println();
+                    }
                 }
             } catch (ApplicationException e) {
-                System.out.println(e.getMessageOfException());
+                System.out.println(e.getCode().getStr());
             }
         }
         while (exit);

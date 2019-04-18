@@ -13,9 +13,7 @@ public class ApplicationException extends Exception {
         this.code = code;
     }
 
-    public ApplicationException(String messageOfException, Throwable cause, ResponseCode code) {
-        super(cause);
-        this.messageOfException = messageOfException;
+    public ApplicationException(ResponseCode code) {
         this.code = code;
     }
 

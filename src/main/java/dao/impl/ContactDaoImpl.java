@@ -5,6 +5,8 @@ import entity.Contact;
 import exception.ApplicationException;
 import exception.ResponseCode;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class ContactDaoImpl implements ContactDao {
@@ -12,6 +14,7 @@ public class ContactDaoImpl implements ContactDao {
     public static int generator = 0;
 
     private Contact[] store = new Contact[10];
+    private List<Contact> store2 = new ArrayList<>();
 
     public void saveContact(Contact contact) throws ApplicationException {
         for (Contact contact1 : getStore()) {
@@ -37,7 +40,7 @@ public class ContactDaoImpl implements ContactDao {
 
     @Override
     public void deleteContactById(int id) throws ApplicationException {
-        if (!isThereId(id)) {
+        if (isThereId(id)) {
             throw new ApplicationException("There isn't this ID", ResponseCode.NOT_CONTENT);
         }
         for (int argument = 0; argument < store.length; argument++) {
@@ -50,20 +53,18 @@ public class ContactDaoImpl implements ContactDao {
     }
 
     public boolean isThereId(int id) {
-        boolean isThere = false;
         for (Contact contact : getStore()) {
-            if (contact != null) {
+            if (Objects.nonNull(contact)) {
                 if (contact.getId() == id) {
-                    isThere = true;
-                    break;
+                    return false;
                 }
             }
         }
-        return isThere;
+        return true;
     }
 
     public Contact getContactById(int contactId) throws ApplicationException {
-        if (!isThereId(contactId)) {
+        if (isThereId(contactId)) {
             throw new ApplicationException("There isn't this ID", ResponseCode.NOT_CONTENT);
         }
         for (Contact storeContacts : getStore()) {
