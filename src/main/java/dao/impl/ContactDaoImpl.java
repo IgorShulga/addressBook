@@ -17,15 +17,8 @@ public class ContactDaoImpl implements ContactDao {
     private List<Contact> store2 = new ArrayList<>();
 
     public void saveContact(Contact contact) throws ApplicationException {
-        for (Contact contact1 : getStore()) {
-            if (Objects.nonNull(contact1) &&
-                    contact.getName().equals(contact1.getName()) &&
-                    contact.getSurNume().equals(contact1.getSurNume()) &&
-                    contact.getPhoneNumber().equals(contact1.getPhoneNumber())) {
-                throw new ApplicationException(ResponseCode.OBJECT_EXIST.getStr(), ResponseCode.OBJECT_EXIST);
-            }
-        }
 
+        searchSameContact(contact);
         for (int argument = 0; argument < store.length; argument++) {
             if (store[argument] == null) {
                 generator = argument;
@@ -39,15 +32,47 @@ public class ContactDaoImpl implements ContactDao {
     }
 
     @Override
-    public void deleteContactById(int id) throws ApplicationException {
-        if (isThereId(id)) {
+    public void deleteContactById(int contactId) throws ApplicationException {
+        if (isThereId(contactId)) {
             throw new ApplicationException("There isn't this ID", ResponseCode.NOT_CONTENT);
         }
         for (int argument = 0; argument < store.length; argument++) {
-            if (store[argument].getId() == id) {
+            if (store[argument].getId() == contactId) {
                 System.out.println("You deleting this contact: " + store[argument]);
                 store[argument] = null;
                 break;
+            }
+        }
+    }
+
+
+    public Contact getContactById(int contactId) throws ApplicationException {
+        if (isThereId(contactId)) {
+            throw new ApplicationException("There isn't this ID", ResponseCode.NOT_CONTENT);
+        }
+        for (Contact storeContacts : getStore()) {
+            if (storeContacts.getId() == contactId) {
+                return storeContacts;
+            }
+        }
+        return null;
+    }
+
+    public void showContacts() {
+        for (Contact contactStore : store) {
+            if (Objects.nonNull(contactStore)) {
+                System.out.println(contactStore);
+            }
+        }
+    }
+
+    private void searchSameContact(Contact contact) throws ApplicationException {
+        for (Contact contactFromStore : getStore()) {
+            if (Objects.nonNull(contactFromStore)
+                    && contact.getName().equals(contactFromStore.getName())
+                    && contact.getPhoneNumber().equals(contactFromStore.getPhoneNumber())
+                    && contact.getSurNume().equals(contactFromStore.getSurNume())) {
+                throw new ApplicationException(ResponseCode.OBJECT_EXIST.getStr(), ResponseCode.OBJECT_EXIST);
             }
         }
     }
@@ -63,32 +88,26 @@ public class ContactDaoImpl implements ContactDao {
         return true;
     }
 
-    public Contact getContactById(int contactId) throws ApplicationException {
-        if (isThereId(contactId)) {
-            throw new ApplicationException("There isn't this ID", ResponseCode.NOT_CONTENT);
-        }
-        for (Contact storeContacts : getStore()) {
-            if (storeContacts.getId() == contactId) {
-                return storeContacts;
+    public boolean isEmptyStore() {
+        for (Contact contact : getStore()) {
+            if (Objects.nonNull(contact)) {
+                return false;
             }
         }
-        return null;
+        return true;
     }
 
-    public Contact getContactByName(String name) {
-        for (Contact elementStore : store) {
-            if (Objects.equals(elementStore.getName().toLowerCase(), name.toLowerCase())) {
-                System.out.println("This contact found by name: " + elementStore.toString());
-                return elementStore;
-            }
-        }
-        return null;
+    public Contact[] getStore() {
+        return store;
     }
 
-    public void showContacts() {
-        for (Contact contactStore : store) {
-            if (contactStore != null) {
-                System.out.println(contactStore);
+    @Override
+    public void deleteContactByEntity(Contact contact) {
+        for (int argument = 0; argument < store.length; argument++) {
+            if (store[argument].equals(contact)) {
+                System.out.println("You deleting this contact: " + store[argument].toString());
+                store[argument] = null;
+                break;
             }
         }
     }
@@ -106,28 +125,14 @@ public class ContactDaoImpl implements ContactDao {
         return contactTemp;
     }
 
-    public void deleteContactByEntity(Contact contact) {
-        for (int argument = 0; argument < store.length; argument++) {
-            if (store[argument].equals(contact)) {
-                System.out.println("You deleting this contact: " + store[argument].toString());
-                store[argument] = null;
-                break;
+    @Override
+    public Contact getContactByName(String name) {
+        for (Contact elementStore : store) {
+            if (Objects.equals(elementStore.getName().toLowerCase(), name.toLowerCase())) {
+                System.out.println("This contact found by name: " + elementStore.toString());
+                return elementStore;
             }
         }
-    }
-
-    public boolean isEmptyStore() {
-        boolean empty = true;
-        for (Contact contact : getStore()) {
-            if (contact != null) {
-                empty = false;
-                break;
-            }
-        }
-        return empty;
-    }
-
-    public Contact[] getStore() {
-        return store;
+        return null;
     }
 }
