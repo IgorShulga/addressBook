@@ -40,7 +40,7 @@ public class ContactServiceImpl implements ContactService {
 
     @Override
     public void updateContact(Scanner scanner) throws ApplicationException {
-        if (contactDaoImpl.isEmptyStore()) {
+        if (contactDaoImpl.getStorage().isEmpty()) {
             throw new ApplicationException(ResponseCode.NOT_FOUND);
         } else {
             contactDaoImpl.showContacts();
@@ -84,7 +84,7 @@ public class ContactServiceImpl implements ContactService {
 
     @Override
     public void deleteContact(Scanner scanner) throws ApplicationException {
-        if (contactDaoImpl.isEmptyStore()) {
+        if (contactDaoImpl.getStorage().isEmpty()) {
             throw new ApplicationException(ResponseCode.NOT_CONTENT.getStr(), ResponseCode.NOT_CONTENT);
         } else {
             contactDaoImpl.showContacts();

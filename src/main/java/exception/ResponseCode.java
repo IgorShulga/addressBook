@@ -2,8 +2,7 @@ package exception;
 
 public enum ResponseCode {
     NOT_FOUND(404, "This storage is empty"),
-    OBJECT_EXIST(302, "This object already exists"),
-//    VALIDATION_ERROR(301, "9999999"),
+    OBJECT_EXIST(302, "This contact already exists"),
     WRONG_DATA_TYPE(415, "Your entered wrong type data. "),
     NOT_CONTENT(204, "This data don't find in address book. ");
 

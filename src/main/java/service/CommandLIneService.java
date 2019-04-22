@@ -30,7 +30,7 @@ public interface CommandLIneService {
         int numberOfMenu;
         boolean exit = true;
         do {
-            System.out.println("Choose your wish:");
+            System.out.println("Choose action: ");
             showMenu();
 
             try {
