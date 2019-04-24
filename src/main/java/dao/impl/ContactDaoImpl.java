@@ -11,13 +11,18 @@ public class ContactDaoImpl implements ContactDao {
 
     public static int generator = 0;
 
-    private List<Contact> storage = new ArrayList<Contact>();
+    private Set<Contact> storage = new TreeSet(new Comparator<Contact>(){
+        @Override
+        public int compare(Contact o1, Contact o2) {
+            return o1.getPhoneNumber().compareTo(o2.getPhoneNumber());
+        }
+    });
 
     public void saveContact(Contact contact) throws ApplicationException {
         searchSameContact(contact);
         generator++;
         contact.setId(generator);
-        getStorage().add(contact);
+        storage.add(contact);
         System.out.println(contact.toString() + " This contact was added in your contact book");
     }
 
@@ -27,7 +32,7 @@ public class ContactDaoImpl implements ContactDao {
         if (isThereId(contactId)) {
             throw new ApplicationException("There isn't this ID", ResponseCode.NOT_CONTENT);
         }
-        for (Contact contactFromStorage : getStorage()) {
+        for (Contact contactFromStorage : storage) {
             if (contactFromStorage.getId() == contactId) {
                 System.out.println("You deleting this contact: " + contactFromStorage.toString());
                 storage.remove(contactFromStorage);
@@ -41,7 +46,7 @@ public class ContactDaoImpl implements ContactDao {
         if (isThereId(contactId)) {
             throw new ApplicationException("There isn't this ID", ResponseCode.NOT_CONTENT);
         }
-        for (Contact contactFromStorage : getStorage()) {
+        for (Contact contactFromStorage : storage) {
             if (contactFromStorage.getId() == contactId) {
                 return contactFromStorage;
             }
@@ -50,8 +55,7 @@ public class ContactDaoImpl implements ContactDao {
     }
 
     public void showContacts() {
-        Collections.sort(getStorage());
-        for (Contact contactFromStorage : getStorage()) {
+        for (Contact contactFromStorage : storage) {
             if (Objects.nonNull(contactFromStorage)) {
                 System.out.println(contactFromStorage);
             }
@@ -103,7 +107,7 @@ public class ContactDaoImpl implements ContactDao {
     }
 
     public boolean isThereId(int id) {
-        for (Contact contactFromStorage : getStorage()) {
+        for (Contact contactFromStorage : storage) {
             if (Objects.nonNull(contactFromStorage)) {
                 if (contactFromStorage.getId() == id) {
                     return false;
@@ -113,7 +117,7 @@ public class ContactDaoImpl implements ContactDao {
         return true;
     }
 
-    public List<Contact> getStorage() {
+    public Set getStorage() {
         return storage;
     }
 }
