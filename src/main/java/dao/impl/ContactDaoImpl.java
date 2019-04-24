@@ -50,6 +50,7 @@ public class ContactDaoImpl implements ContactDao {
     }
 
     public void showContacts() {
+        Collections.sort(getStorage());
         for (Contact contactFromStorage : getStorage()) {
             if (Objects.nonNull(contactFromStorage)) {
                 System.out.println(contactFromStorage);
