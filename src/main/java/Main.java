@@ -1,3 +1,4 @@
+import entity.Contact;
 import exception.ApplicationException;
 import service.impl.CommandLineServiceImpl;
 

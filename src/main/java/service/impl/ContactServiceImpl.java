@@ -98,5 +98,4 @@ public class ContactServiceImpl implements ContactService {
     public void showAllContacts(Scanner scanner) {
         contactDaoImpl.showContacts();
     }
-
 }

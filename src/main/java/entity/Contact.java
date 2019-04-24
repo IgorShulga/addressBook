@@ -2,7 +2,7 @@ package entity;
 
 import java.util.Objects;
 
-public class Contact {
+public class Contact implements Comparable<Contact> {
     private int id;
     private String name;
     private String surNume;
@@ -79,5 +79,10 @@ public class Contact {
                 ", surNume='" + surNume + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
                 '}';
+    }
+
+    @Override
+    public int compareTo(Contact contact) {
+        return phoneNumber.compareTo(contact.getPhoneNumber());
     }
 }
