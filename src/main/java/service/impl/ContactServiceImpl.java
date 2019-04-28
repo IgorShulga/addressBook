@@ -22,7 +22,7 @@ public class ContactServiceImpl implements ContactService {
     public void addContact(Scanner scanner) throws ApplicationException {
         Contact contact = new Contact();
 
-        System.out.println("Enter please name of your contact person:");
+        System.out.println(MassageApp.ENTER_NAME);
         String name = scanner.next();
         contact.setName(name);
 
