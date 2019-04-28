@@ -1,7 +1,7 @@
 package service;
 
 import exception.ApplicationException;
-import exception.ResponseCode;
+import constants.ResponseCode;
 import service.impl.ContactServiceImpl;
 
 import java.util.Scanner;
@@ -62,11 +62,11 @@ public interface CommandLIneService {
                         break;
                     }
                     default:{
-                        System.out.println();
+                        System.out.println("1234567890");
                     }
                 }
             } catch (ApplicationException e) {
-                System.out.println(e.getCode().getStr());
+                System.out.println(e.getCode());
             }
         }
         while (exit);

@@ -1,9 +1,10 @@
 package dao.impl;
 
+import constants.MassageApp;
 import dao.ContactDao;
 import entity.Contact;
 import exception.ApplicationException;
-import exception.ResponseCode;
+import constants.ResponseCode;
 
 import java.util.*;
 
@@ -30,15 +31,18 @@ public class ContactDaoImpl implements ContactDao {
     @Override
     public void deleteContactById(int contactId) throws ApplicationException {
         if (isThereObjectInStorage(contactId)) {
-            throw new ApplicationException("There isn't this ID", ResponseCode.NOT_CONTENT);
-        }
-        for (Contact contactFromStorage : storage) {
-            if (contactFromStorage.getId() == contactId) {
-                System.out.println("You deleting this contact: " + contactFromStorage.toString());
-                storage.remove(contactFromStorage);
-                break;
+            for (Contact contactFromStorage : storage) {
+                if (contactFromStorage.getId() == contactId) {
+                    System.out.println("You deleting this contact: " + contactFromStorage.toString());
+                    storage.remove(contactFromStorage);
+                    break;
+                }
             }
+        } else {
+            System.out.println(MassageApp.ID_DOES_NOT_EXIST);
+            throw new ApplicationException(ResponseCode.NOT_CONTENT);
         }
+
     }
 
     @Override
@@ -50,7 +54,8 @@ public class ContactDaoImpl implements ContactDao {
                 }
             }
         }
-        throw new ApplicationException("There isn't object with this ID", ResponseCode.NOT_CONTENT);
+        System.out.println(MassageApp.THERE_IS_NOT_ID);
+        throw new ApplicationException(ResponseCode.NOT_CONTENT);
     }
 
 
@@ -81,7 +86,8 @@ public class ContactDaoImpl implements ContactDao {
                 return contactFromStorage;
             }
         }
-       throw new ApplicationException(ResponseCode.OBJECT_WAS_NOT_CHANGED);
+        System.out.println(MassageApp.ID_DOES_NOT_EXIST);
+        throw new ApplicationException(ResponseCode.OBJECT_WAS_NOT_CHANGED);
     }
 
     @Override
@@ -101,7 +107,8 @@ public class ContactDaoImpl implements ContactDao {
                     && contact.getName().equals(contactFromStorage.getName())
                     && contact.getPhoneNumber().equals(contactFromStorage.getPhoneNumber())
                     && contact.getSurNume().equals(contactFromStorage.getSurNume())) {
-                throw new ApplicationException(ResponseCode.OBJECT_EXIST.getStr(), ResponseCode.OBJECT_EXIST);
+                System.out.println(MassageApp.OBJECT_EXIST);
+                throw new ApplicationException(ResponseCode.OBJECT_EXIST);
             }
         }
     }

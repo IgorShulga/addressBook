@@ -1,5 +1,7 @@
 package exception;
 
+import constants.ResponseCode;
+
 public class ApplicationException extends Exception {
 
     private String messageOfException;
@@ -8,7 +10,7 @@ public class ApplicationException extends Exception {
     public ApplicationException() {
     }
 
-    public ApplicationException(String messageOfException, ResponseCode code) {
+    public ApplicationException(ResponseCode code, String messageOfException) {
         this.messageOfException = messageOfException;
         this.code = code;
     }

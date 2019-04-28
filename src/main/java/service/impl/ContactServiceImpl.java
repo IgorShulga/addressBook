@@ -1,10 +1,11 @@
 package service.impl;
 
+import constants.MassageApp;
 import dao.ContactDao;
 import dao.impl.ContactDaoImpl;
 import entity.Contact;
 import exception.ApplicationException;
-import exception.ResponseCode;
+import constants.ResponseCode;
 import service.ContactService;
 
 import java.util.Scanner;
@@ -110,7 +111,8 @@ public class ContactServiceImpl implements ContactService {
     @Override
     public void deleteContact(Scanner scanner) throws ApplicationException {
         if (contactDaoImpl.getStorage().isEmpty()) {
-            throw new ApplicationException(ResponseCode.NOT_CONTENT.getStr(), ResponseCode.NOT_CONTENT);
+            System.out.println(MassageApp.STORAGE_IS_EMPTY);
+            throw new ApplicationException(ResponseCode.NOT_CONTENT);
         } else {
             contactDaoImpl.showContacts();
             System.out.println("Enter please contacts ID what you want delete");
