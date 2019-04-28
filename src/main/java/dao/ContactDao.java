@@ -37,7 +37,7 @@ public interface ContactDao {
      * @param contactId id of contact
      * @return contact of address book
      */
-    Contact updateContactById(int contactId);
+    Contact updateContactById(int contactId) throws ApplicationException;
 
     /**
      * This method looking for contact by id.
@@ -53,6 +53,6 @@ public interface ContactDao {
      * @param name name of contact
      * @return contact of address book
      */
-    Contact getContactByName(String name);
+    Contact getContactByName(String name) throws ApplicationException;
 
 }

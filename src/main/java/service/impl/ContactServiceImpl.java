@@ -38,8 +38,9 @@ public class ContactServiceImpl implements ContactService {
         System.out.println("Thank you for saving your contact in this contact book.");
     }
 
+
     @Override
-    public void updateContact(Scanner scanner) throws ApplicationException {
+    public Contact updateContact(Scanner scanner) throws ApplicationException {
         if (contactDaoImpl.getStorage().isEmpty()) {
             throw new ApplicationException(ResponseCode.NOT_FOUND);
         } else {
@@ -47,40 +48,64 @@ public class ContactServiceImpl implements ContactService {
             System.out.println("Enter please contacts ID what you want update");
             int contactId = scanner.nextInt();
             Contact contact = contactDaoImpl.updateContactById(contactId);
-            boolean exit = true;
-            do {
-                System.out.println("Choose field for update: " + "\n" + "1 - update Name" + "\n" + "2 - update Sur name"
-                        + "\n" + "3 - update phone number" + "\n" + "0 - finish update");
-                int numberOfMenu = scanner.nextInt();
-                switch (numberOfMenu) {
-                    case 1: {
-                        System.out.println("Please update name of your contact person:");
-                        contact.setName(scanner.next());
-                        break;
+            return editContact(scanner, contact);
+        }
+    }
+
+    private Contact editContact(Scanner scanner, Contact contact) throws ApplicationException {
+        boolean exit = true;
+        do {
+            System.out.println("Choose field for update: " + "\n" +
+                    "1 - update Name" + "\n" +
+                    "2 - update Sur name" + "\n" +
+                    "3 - update phone number" + "\n" +
+                    "0 - finish update");
+                int number = scanner.nextInt();
+                switch (number) {
+                    case NAME: {
+                        return editFieldOfContact(NAME, contact, scanner);
                     }
-                    case 2: {
-                        System.out.println("Please update sur name of your contact person:");
-                        contact.setSurNume(scanner.next());
-                        break;
+                    case SUR_NAME: {
+                        return editFieldOfContact(SUR_NAME, contact, scanner);
                     }
-                    case 3: {
-                        System.out.println("Please, update phone number of your contact person:");
-                        contact.setPhoneNumber(scanner.next());
-                        break;
+                    case PHONE_NUMBER: {
+                        return editFieldOfContact(PHONE_NUMBER, contact, scanner);
                     }
-                    case 0: {
-                        System.out.print("Your contact udated: ");
-                        System.out.println(contact.toString());
+                    case EXIT: {
+                        System.out.println("You exited from update mode.");
                         exit = false;
                         break;
                     }
                     default: {
-                        System.out.println("Sorry. You enter wrong number of menu. Choose another number.");
+                        System.out.println("Sorry. You enter wrong number of menu. We don't change contact. ");
+                        throw new ApplicationException(ResponseCode.WRONG_DATA_TYPE);
                     }
                 }
-            } while (exit);
-        }
+        } while (exit);
+        return contact;
     }
+
+    private Contact editFieldOfContact(int numberOfField, Contact contact, Scanner scanner) {
+        System.out.println("Please enter new value field...");
+        String str = scanner.next();
+        switch (numberOfField) {
+            case ContactService.NAME: {
+                contact.setName(str);
+                break;
+            }
+            case ContactService.SUR_NAME: {
+                contact.setSurNume(str);
+                break;
+            }
+            case ContactService.PHONE_NUMBER: {
+                contact.setPhoneNumber(str);
+                break;
+            }
+        }
+        System.out.print("Your contact was updated: ");
+        return contact;
+    }
+
 
     @Override
     public void deleteContact(Scanner scanner) throws ApplicationException {

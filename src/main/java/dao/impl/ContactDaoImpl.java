@@ -11,7 +11,7 @@ public class ContactDaoImpl implements ContactDao {
 
     public static int generator = 0;
 
-    private Set<Contact> storage = new TreeSet(new Comparator<Contact>(){
+    private Set<Contact> storage = new TreeSet(new Comparator<Contact>() {
         @Override
         public int compare(Contact o1, Contact o2) {
             return o1.getPhoneNumber().compareTo(o2.getPhoneNumber());
@@ -29,7 +29,7 @@ public class ContactDaoImpl implements ContactDao {
 
     @Override
     public void deleteContactById(int contactId) throws ApplicationException {
-        if (isThereId(contactId)) {
+        if (isThereObjectInStorage(contactId)) {
             throw new ApplicationException("There isn't this ID", ResponseCode.NOT_CONTENT);
         }
         for (Contact contactFromStorage : storage) {
@@ -43,16 +43,16 @@ public class ContactDaoImpl implements ContactDao {
 
     @Override
     public Contact getContactById(int contactId) throws ApplicationException {
-        if (isThereId(contactId)) {
-            throw new ApplicationException("There isn't this ID", ResponseCode.NOT_CONTENT);
-        }
-        for (Contact contactFromStorage : storage) {
-            if (contactFromStorage.getId() == contactId) {
-                return contactFromStorage;
+        if (isThereObjectInStorage(contactId)) {
+            for (Contact contactFromStorage : storage) {
+                if (contactFromStorage.getId() == contactId) {
+                    return contactFromStorage;
+                }
             }
         }
-        return null;
+        throw new ApplicationException("There isn't object with this ID", ResponseCode.NOT_CONTENT);
     }
+
 
     public void showContacts() {
         for (Contact contactFromStorage : storage) {
@@ -74,25 +74,25 @@ public class ContactDaoImpl implements ContactDao {
     }
 
     @Override
-    public Contact updateContactById(int contactId) {
+    public Contact updateContactById(int contactId) throws ApplicationException {
         for (Contact contactFromStorage : storage) {
             if (contactFromStorage.getId() == contactId) {
                 System.out.println("You updating this contact: " + contactFromStorage.toString());
                 return contactFromStorage;
             }
         }
-        return null;
+       throw new ApplicationException(ResponseCode.OBJECT_WAS_NOT_CHANGED);
     }
 
     @Override
-    public Contact getContactByName(String name) {
+    public Contact getContactByName(String name) throws ApplicationException {
         for (Contact contactFromStorage : storage) {
             if (Objects.equals(contactFromStorage.getName().toLowerCase(), name.toLowerCase())) {
                 System.out.println("This contact found by name: " + contactFromStorage.toString());
                 return contactFromStorage;
             }
         }
-        return null;
+        throw new ApplicationException(ResponseCode.NOT_CONTENT);
     }
 
     private void searchSameContact(Contact contact) throws ApplicationException {
@@ -106,15 +106,19 @@ public class ContactDaoImpl implements ContactDao {
         }
     }
 
-    public boolean isThereId(int id) {
+    public boolean isThereObjectInStorage(int id) {
         for (Contact contactFromStorage : storage) {
             if (Objects.nonNull(contactFromStorage)) {
                 if (contactFromStorage.getId() == id) {
-                    return false;
+                    return true;
                 }
             }
         }
-        return true;
+        return false;
+    }
+
+    public void deleteById(int id) throws ApplicationException {
+
     }
 
     public Set getStorage() {
