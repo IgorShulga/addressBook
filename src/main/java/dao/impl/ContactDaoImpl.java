@@ -1,136 +1,105 @@
 package dao.impl;
 
+import constants.MassageApp;
 import dao.ContactDao;
 import entity.Contact;
 import exception.ApplicationException;
-import exception.ResponseCode;
+import constants.ResponseCode;
 
-import java.util.Objects;
+import java.util.*;
 
 public class ContactDaoImpl implements ContactDao {
 
     public static int generator = 0;
 
-    private Contact[] store = new Contact[10];
-//    private List<Contact> store2 = new ArrayList<>();
+    private Set<Contact> storage = new TreeSet(new Comparator<Contact>() {
+        @Override
+        public int compare(Contact o1, Contact o2) {
+            return o1.getPhoneNumber().compareTo(o2.getPhoneNumber());
+        }
+    });
 
     public void saveContact(Contact contact) throws ApplicationException {
-
         searchSameContact(contact);
-        for (int argument = 0; argument < store.length; argument++) {
-            if (Objects.isNull(store[argument])) {
-                generator = argument;
-                contact.setId(++generator);
-                store[argument] = contact;
-                System.out.println("This contact was added in your contact book.");
-                System.out.println(contact.toString());
-                break;
-            }
-        }
+        generator++;
+        contact.setId(generator);
+        storage.add(contact);
     }
+
 
     @Override
     public void deleteContactById(int contactId) throws ApplicationException {
-        if (isThereId(contactId)) {
-            throw new ApplicationException("There isn't this ID", ResponseCode.NOT_CONTENT);
-        }
-        for (int argument = 0; argument < store.length; argument++) {
-            if (store[argument].getId() == contactId) {
-                System.out.println("You deleting this contact: " + store[argument]);
-                store[argument] = null;
-                break;
+        if (isThereObjectInStorage(contactId)) {
+            for (Contact contactFromStorage : storage) {
+                if (contactFromStorage.getId() == contactId) {
+                    storage.remove(contactFromStorage);
+                    break;
+                }
             }
+        } else {
+            System.out.println(MassageApp.ID_DOES_NOT_EXIST);
+            throw new ApplicationException(ResponseCode.NOT_CONTENT);
         }
+
     }
 
     @Override
     public Contact getContactById(int contactId) throws ApplicationException {
-        if (isThereId(contactId)) {
-            throw new ApplicationException("There isn't this ID", ResponseCode.NOT_CONTENT);
-        }
-        for (Contact storeContacts : getStore()) {
-            if (storeContacts.getId() == contactId) {
-                return storeContacts;
-            }
-        }
-        return null;
-    }
-
-    public void showContacts() {
-        for (Contact contactStore : store) {
-            if (Objects.nonNull(contactStore)) {
-                System.out.println(contactStore);
-            }
-        }
-    }
-
-    private void searchSameContact(Contact contact) throws ApplicationException {
-        for (Contact contactFromStore : getStore()) {
-            if (Objects.nonNull(contactFromStore)
-                    && contact.getName().equals(contactFromStore.getName())
-                    && contact.getPhoneNumber().equals(contactFromStore.getPhoneNumber())
-                    && contact.getSurNume().equals(contactFromStore.getSurNume())) {
-                throw new ApplicationException(ResponseCode.OBJECT_EXIST.getStr(), ResponseCode.OBJECT_EXIST);
-            }
-        }
-    }
-
-    public boolean isThereId(int id) {
-        for (Contact contact : getStore()) {
-            if (Objects.nonNull(contact)) {
-                if (contact.getId() == id) {
-                    return false;
+        if (isThereObjectInStorage(contactId)) {
+            for (Contact contactFromStorage : storage) {
+                if (contactFromStorage.getId() == contactId) {
+                    return contactFromStorage;
                 }
             }
         }
-        return true;
+        System.out.println(MassageApp.THERE_IS_NOT_ID);
+        throw new ApplicationException(ResponseCode.NOT_CONTENT);
     }
 
-    public boolean isEmptyStore() {
-        for (Contact contact : getStore()) {
-            if (Objects.nonNull(contact)) {
-                return false;
-            }
-        }
-        return true;
-    }
 
-    public Contact[] getStore() {
-        return store;
-    }
-
-    @Override
-    public void deleteContactByEntity(Contact contact) {
-        for (int argument = 0; argument < store.length; argument++) {
-            if (store[argument].equals(contact)) {
-                System.out.println("You deleting this contact: " + store[argument].toString());
-                store[argument] = null;
-                break;
+    public void showContacts() {
+        for (Contact contactFromStorage : storage) {
+            if (Objects.nonNull(contactFromStorage)) {
+                System.out.println(contactFromStorage);
             }
         }
     }
 
     @Override
-    public Contact updateContactById(int contactId) {
-        Contact contactTemp = null;
-        for (Contact elementStore : store) {
-            if (elementStore.getId() == contactId) {
-                System.out.println("You updating this contact: " + elementStore.toString());
-                contactTemp = elementStore;
-                break;
+    public Contact updateContactById(int contactId) throws ApplicationException {
+        for (Contact contactFromStorage : storage) {
+            if (contactFromStorage.getId() == contactId) {
+                return contactFromStorage;
             }
         }
-        return contactTemp;
+        System.out.println(MassageApp.ID_DOES_NOT_EXIST);
+        throw new ApplicationException(ResponseCode.OBJECT_WAS_NOT_CHANGED);
     }
 
-    @Override
-    public Contact getContactByName(String name) {
-        for (Contact elementStore : store) {
-            if (Objects.equals(elementStore.getName().toLowerCase(), name.toLowerCase())) {
-                System.out.println("This contact found by name: " + elementStore.toString());
-                return elementStore;
+    private void searchSameContact(Contact contact) throws ApplicationException {
+        for (Contact contactFromStorage : storage) {
+            if (Objects.nonNull(contactFromStorage)
+                    && contact.getName().equals(contactFromStorage.getName())
+                    && contact.getPhoneNumber().equals(contactFromStorage.getPhoneNumber())
+                    && contact.getSurNume().equals(contactFromStorage.getSurNume())) {
+                System.out.println(MassageApp.OBJECT_EXIST);
+                throw new ApplicationException(ResponseCode.OBJECT_EXIST);
             }
         }
-        return null;
+    }
+
+    public boolean isThereObjectInStorage(int id) {
+        for (Contact contactFromStorage : storage) {
+            if (Objects.nonNull(contactFromStorage)) {
+                if (contactFromStorage.getId() == id) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public Set getStorage() {
+        return storage;
     }
 }

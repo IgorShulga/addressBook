@@ -1,9 +1,12 @@
 package service;
 
+import constants.MassageApp;
 import exception.ApplicationException;
-import exception.ResponseCode;
+import constants.ResponseCode;
 import service.impl.ContactServiceImpl;
 
+import java.text.NumberFormat;
+import java.text.ParsePosition;
 import java.util.Scanner;
 
 public interface CommandLIneService {
@@ -30,45 +33,55 @@ public interface CommandLIneService {
         int numberOfMenu;
         boolean exit = true;
         do {
-            System.out.println("Choose your wish:");
+            System.out.println("Choose action: ");
             showMenu();
 
             try {
                 String str = scanner.next();
-                if (!str.matches("[0-4]+")) {
-                    throw new ApplicationException(ResponseCode.WRONG_DATA_TYPE);
-                }
-                numberOfMenu = Integer.parseInt(str);
-                switch (numberOfMenu) {
-                    case 1: {
-                        service.addContact(scanner);
-                        break;
-                    }
-                    case 2: {
-                        service.updateContact(scanner);
-                        break;
-                    }
-                    case 3: {
-                        service.deleteContact(scanner);
-                        break;
-                    }
-                    case 4: {
-                        service.showAllContacts(scanner);
-                        break;
-                    }
-                    case 0: {
-                        System.out.println("Thank you that use our app. Good bay.");
-                        exit = false;
-                        break;
-                    }
-                    default:{
-                        System.out.println();
+                if (isCorrectData(str)) {
+                    numberOfMenu = Integer.parseInt(str);
+                    switch (numberOfMenu) {
+                        case 1: {
+                            service.addContact(scanner);
+                            break;
+                        }
+                        case 2: {
+                            service.updateContact(scanner);
+                            break;
+                        }
+                        case 3: {
+                            service.deleteContact(scanner);
+                            break;
+                        }
+                        case 4: {
+                            service.showAllContacts(scanner);
+                            break;
+                        }
+                        case 0: {
+                            System.out.println("Thank you that used our app. Good bay.");
+                            exit = false;
+                            break;
+                        }
+                        default: {
+                            System.out.println("You entered invalid number. Repeat please.");
+                        }
                     }
                 }
             } catch (ApplicationException e) {
-                System.out.println(e.getCode().getStr());
+                System.out.println("Exception: " + e.getCode().getCode());
             }
         }
         while (exit);
     }
+
+    static boolean isCorrectData(String str) {
+        try {
+            Integer.parseInt(str);
+        } catch (NullPointerException | NumberFormatException e) {
+            System.out.println(MassageApp.WRONG_DATA_TYPE);
+            return false;
+        }
+        return true;
+    }
 }
+

@@ -1,5 +1,7 @@
 package entity;
 
+import java.util.Objects;
+
 public class Contact {
     private int id;
     private String name;
@@ -55,9 +57,9 @@ public class Contact {
         Contact contact = (Contact) o;
 
         if (id != contact.id) return false;
-        if (name != null ? !name.equals(contact.name) : contact.name != null) return false;
-        if (surNume != null ? !surNume.equals(contact.surNume) : contact.surNume != null) return false;
-        return phoneNumber != null ? phoneNumber.equals(contact.phoneNumber) : contact.phoneNumber == null;
+        if (!Objects.equals(name, contact.name)) return false;
+        if (!Objects.equals(surNume, contact.surNume)) return false;
+        return Objects.equals(phoneNumber, contact.phoneNumber);
     }
 
     @Override
