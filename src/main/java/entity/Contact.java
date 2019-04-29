@@ -2,7 +2,7 @@ package entity;
 
 import java.util.Objects;
 
-public class Contact  {
+public class Contact {
     private int id;
     private String name;
     private String surNume;

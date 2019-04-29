@@ -22,33 +22,35 @@ public class ContactServiceImpl implements ContactService {
     public void addContact(Scanner scanner) throws ApplicationException {
         Contact contact = new Contact();
 
-        System.out.println(MassageApp.ENTER_NAME);
+        System.out.println(MassageApp.ENTER_VALUE_FIELD + " Name - ");
         String name = scanner.next();
         contact.setName(name);
 
-        System.out.println("Enter please sur name of your contact person:");
+        System.out.println(MassageApp.ENTER_VALUE_FIELD  + " Surname - ");
         String surName = scanner.next();
         contact.setSurNume(surName);
 
-        System.out.println("Enter please phone number of your contact contact:");
+        System.out.println(MassageApp.ENTER_VALUE_FIELD  + " Phone number - ");
         String phoneNumber = scanner.next().replaceAll("[^0-9+]", "");
         contact.setPhoneNumber(phoneNumber);
 
         contactDaoImpl.saveContact(contact);
 
-        System.out.println("Thank you for saving your contact in this contact book.");
+        System.out.println(" This contact was added in your contact book. Thank you for using this contact book.");
     }
 
 
     @Override
     public Contact updateContact(Scanner scanner) throws ApplicationException {
         if (contactDaoImpl.getStorage().isEmpty()) {
-            throw new ApplicationException(ResponseCode.NOT_FOUND);
+            System.out.println(MassageApp.STORAGE_IS_EMPTY);
+            throw new ApplicationException(ResponseCode.STORAGE_IS_EMPTY);
         } else {
             contactDaoImpl.showContacts();
             System.out.println("Enter please contacts ID what you want update");
             int contactId = scanner.nextInt();
             Contact contact = contactDaoImpl.updateContactById(contactId);
+            System.out.println("You updating this contact: " + contact.toString());
             return editContact(scanner, contact);
         }
     }
@@ -87,7 +89,7 @@ public class ContactServiceImpl implements ContactService {
     }
 
     private Contact editFieldOfContact(int numberOfField, Contact contact, Scanner scanner) {
-        System.out.println("Please enter new value field...");
+        System.out.println(MassageApp.ENTER_VALUE_FIELD);
         String str = scanner.next();
         switch (numberOfField) {
             case ContactService.NAME: {
@@ -118,6 +120,7 @@ public class ContactServiceImpl implements ContactService {
             System.out.println("Enter please contacts ID what you want delete");
             int contactIdForDelete = scanner.nextInt();
             contactDaoImpl.deleteContactById(contactIdForDelete);
+            System.out.println("Your contact was delete.");
         }
     }
 

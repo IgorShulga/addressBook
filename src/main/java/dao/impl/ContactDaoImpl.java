@@ -24,7 +24,6 @@ public class ContactDaoImpl implements ContactDao {
         generator++;
         contact.setId(generator);
         storage.add(contact);
-        System.out.println(contact.toString() + " This contact was added in your contact book");
     }
 
 
@@ -33,7 +32,6 @@ public class ContactDaoImpl implements ContactDao {
         if (isThereObjectInStorage(contactId)) {
             for (Contact contactFromStorage : storage) {
                 if (contactFromStorage.getId() == contactId) {
-                    System.out.println("You deleting this contact: " + contactFromStorage.toString());
                     storage.remove(contactFromStorage);
                     break;
                 }
@@ -68,37 +66,14 @@ public class ContactDaoImpl implements ContactDao {
     }
 
     @Override
-    public void deleteContactByEntity(Contact contact) {
-        for (Contact contactFromStorage : storage) {
-            if (Objects.equals(contactFromStorage, contact)) {
-                System.out.println("You deleting this contact: " + contactFromStorage.toString());
-                storage.remove(contact);
-                break;
-            }
-        }
-    }
-
-    @Override
     public Contact updateContactById(int contactId) throws ApplicationException {
         for (Contact contactFromStorage : storage) {
             if (contactFromStorage.getId() == contactId) {
-                System.out.println("You updating this contact: " + contactFromStorage.toString());
                 return contactFromStorage;
             }
         }
         System.out.println(MassageApp.ID_DOES_NOT_EXIST);
         throw new ApplicationException(ResponseCode.OBJECT_WAS_NOT_CHANGED);
-    }
-
-    @Override
-    public Contact getContactByName(String name) throws ApplicationException {
-        for (Contact contactFromStorage : storage) {
-            if (Objects.equals(contactFromStorage.getName().toLowerCase(), name.toLowerCase())) {
-                System.out.println("This contact found by name: " + contactFromStorage.toString());
-                return contactFromStorage;
-            }
-        }
-        throw new ApplicationException(ResponseCode.NOT_CONTENT);
     }
 
     private void searchSameContact(Contact contact) throws ApplicationException {
@@ -122,10 +97,6 @@ public class ContactDaoImpl implements ContactDao {
             }
         }
         return false;
-    }
-
-    public void deleteById(int id) throws ApplicationException {
-
     }
 
     public Set getStorage() {

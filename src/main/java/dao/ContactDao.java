@@ -20,13 +20,6 @@ public interface ContactDao {
     void deleteContactById(int id) throws ApplicationException;
 
     /**
-     * This method delete contact of address book.
-     *
-     * @param contact contact of address book
-     */
-    void deleteContactByEntity(Contact contact);
-
-    /**
      * This method print all contacts of address book.
      */
     void showContacts();
@@ -46,13 +39,4 @@ public interface ContactDao {
      * @return contact of address book
      */
     Contact getContactById(int contactId) throws ApplicationException;
-
-    /**
-     * This method looking for contact by name.
-     *
-     * @param name name of contact
-     * @return contact of address book
-     */
-    Contact getContactByName(String name) throws ApplicationException;
-
 }
