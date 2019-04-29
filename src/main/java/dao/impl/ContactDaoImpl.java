@@ -13,7 +13,9 @@ public class ContactDaoImpl implements ContactDao {
 
     public static int generator = 0;
 
-    private Set<Contact> storage = new TreeSet(Comparator.comparing(Object::hashCode));
+    private Set<Contact> storage = new TreeSet<>(Comparator.comparing(Contact::getName).
+            thenComparing(Contact::getSurNume).
+            thenComparing(Contact::getPhoneNumber));
 
     public void saveContact(Contact contact) throws ApplicationException {
         searchSameContact(contact);
@@ -25,12 +27,7 @@ public class ContactDaoImpl implements ContactDao {
     @Override
     public void deleteContactById(int contactId) throws ApplicationException {
         if (isThereObjectInStorage(contactId)) {
-            for (Contact contactFromStorage : storage) {
-                if (contactFromStorage.getId() == contactId) {
-                    storage.remove(contactFromStorage);
-                    break;
-                }
-            }
+            storage.removeIf(contact -> contact.getId() == contactId);
         } else {
             System.out.println(MassageApp.ID_DOES_NOT_EXIST);
             throw new ApplicationException(ResponseCode.NOT_CONTENT);
@@ -38,9 +35,14 @@ public class ContactDaoImpl implements ContactDao {
     }
 
     @Override
-    public Contact getContactById(int contactId) {
-        return storage.stream().
-                filter(contactFromStorage -> contactFromStorage.getId() == contactId).findFirst().get();
+    public Contact getContactById(int contactId) throws ApplicationException {
+        if (!isThereObjectInStorage(contactId)) {
+            System.out.println(MassageApp.ID_DOES_NOT_EXIST);
+            throw new ApplicationException(ResponseCode.NOT_FOUND);
+        } else {
+            return storage.stream().
+                    filter(contactFromStorage -> contactFromStorage.getId() == contactId).findFirst().get();
+        }
     }
 
     public void showContacts() {
@@ -54,12 +56,17 @@ public class ContactDaoImpl implements ContactDao {
                 filter(contactFromStorage -> contactFromStorage.getId() == contactId).findFirst().get();
     }
 
+    public Contact updateContactById(Contact contact) {
+        return storage.stream().
+                filter(contactFromStorage -> contactFromStorage.equals(contact)).findFirst().get();
+    }
+
     private void searchSameContact(Contact contact) throws ApplicationException {
-        for (Contact contactFromStorage : storage) {
-            if (Objects.nonNull(contactFromStorage)
-                    && contact.getName().equals(contactFromStorage.getName())
-                    && contact.getPhoneNumber().equals(contactFromStorage.getPhoneNumber())
-                    && contact.getSurNume().equals(contactFromStorage.getSurNume())) {
+        for (Contact contactFromStore : storage) {
+            if (Objects.nonNull(contactFromStore)
+                    && contact.getName().equals(contactFromStore.getName())
+                    && contact.getPhoneNumber().equals(contactFromStore.getPhoneNumber())
+                    && contact.getSurNume().equals(contactFromStore.getSurNume())) {
                 System.out.println(MassageApp.OBJECT_EXIST);
                 throw new ApplicationException(ResponseCode.OBJECT_EXIST);
             }
@@ -67,8 +74,7 @@ public class ContactDaoImpl implements ContactDao {
     }
 
     private boolean isThereObjectInStorage(int id) {
-        return storage.stream().
-                anyMatch(contact -> contact.getId() == id);
+        return storage.stream().anyMatch(contact -> contact.getId() == id);
     }
 
     public Set getStorage() {

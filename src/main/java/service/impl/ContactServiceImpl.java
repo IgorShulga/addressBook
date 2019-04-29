@@ -8,6 +8,7 @@ import exception.ApplicationException;
 import constants.ResponseCode;
 import service.ContactService;
 
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class ContactServiceImpl implements ContactService {
@@ -26,11 +27,11 @@ public class ContactServiceImpl implements ContactService {
         String name = scanner.next();
         contact.setName(name);
 
-        System.out.println(MassageApp.ENTER_VALUE_FIELD  + " Surname - ");
+        System.out.println(MassageApp.ENTER_VALUE_FIELD + " Surname - ");
         String surName = scanner.next();
         contact.setSurNume(surName);
 
-        System.out.println(MassageApp.ENTER_VALUE_FIELD  + " Phone number - ");
+        System.out.println(MassageApp.ENTER_VALUE_FIELD + " Phone number - ");
         String phoneNumber = scanner.next().replaceAll("[^0-9+]", "");
         contact.setPhoneNumber(phoneNumber);
 
@@ -48,10 +49,13 @@ public class ContactServiceImpl implements ContactService {
         } else {
             contactDaoImpl.showContacts();
             System.out.println("Enter please contacts ID what you want update");
-            int contactId = scanner.nextInt();
-            Contact contact = contactDaoImpl.updateContactById(contactId);
+
+            int index = scanner.nextInt();
+            Contact contact = contactDaoImpl.getContactById(index);
+            contactDaoImpl.updateContactById(contact);
             System.out.println("You updating this contact: " + contact.toString());
             return editContact(scanner, contact);
+
         }
     }
 
@@ -63,27 +67,27 @@ public class ContactServiceImpl implements ContactService {
                     "2 - update Sur name" + "\n" +
                     "3 - update phone number" + "\n" +
                     "0 - finish update");
-                int number = scanner.nextInt();
-                switch (number) {
-                    case NAME: {
-                        return editFieldOfContact(NAME, contact, scanner);
-                    }
-                    case SUR_NAME: {
-                        return editFieldOfContact(SUR_NAME, contact, scanner);
-                    }
-                    case PHONE_NUMBER: {
-                        return editFieldOfContact(PHONE_NUMBER, contact, scanner);
-                    }
-                    case EXIT: {
-                        System.out.println("You exited from update mode.");
-                        exit = false;
-                        break;
-                    }
-                    default: {
-                        System.out.println("Sorry. You enter wrong number of menu. We don't change contact. ");
-                        throw new ApplicationException(ResponseCode.WRONG_DATA_TYPE);
-                    }
+            int number = scanner.nextInt();
+            switch (number) {
+                case NAME: {
+                    return editFieldOfContact(NAME, contact, scanner);
                 }
+                case SUR_NAME: {
+                    return editFieldOfContact(SUR_NAME, contact, scanner);
+                }
+                case PHONE_NUMBER: {
+                    return editFieldOfContact(PHONE_NUMBER, contact, scanner);
+                }
+                case EXIT: {
+                    System.out.println("You exited from update mode.");
+                    exit = false;
+                    break;
+                }
+                default: {
+                    System.out.println("Sorry. You enter wrong number of menu. We don't change contact. ");
+                    throw new ApplicationException(ResponseCode.WRONG_DATA_TYPE);
+                }
+            }
         } while (exit);
         return contact;
     }

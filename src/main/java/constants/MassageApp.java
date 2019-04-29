@@ -9,5 +9,6 @@ public class MassageApp {
     public static final String STORAGE_IS_EMPTY = "This storage is empty";
     public static final String ID_DOES_NOT_EXIST = "This ID does not exist in address book";
     public static final String WRONG_DATA_TYPE = "You entered wrong type data.";
+//    public static final String QQQ = "QQQ";
 
 }
