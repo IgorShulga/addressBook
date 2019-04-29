@@ -7,17 +7,13 @@ import exception.ApplicationException;
 import constants.ResponseCode;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 public class ContactDaoImpl implements ContactDao {
 
     public static int generator = 0;
 
-    private Set<Contact> storage = new TreeSet(new Comparator<Contact>() {
-        @Override
-        public int compare(Contact o1, Contact o2) {
-            return o1.getPhoneNumber().compareTo(o2.getPhoneNumber());
-        }
-    });
+    private Set<Contact> storage = new TreeSet(Comparator.comparing(Object::hashCode));
 
     public void saveContact(Contact contact) throws ApplicationException {
         searchSameContact(contact);
@@ -25,7 +21,6 @@ public class ContactDaoImpl implements ContactDao {
         contact.setId(generator);
         storage.add(contact);
     }
-
 
     @Override
     public void deleteContactById(int contactId) throws ApplicationException {
@@ -40,40 +35,23 @@ public class ContactDaoImpl implements ContactDao {
             System.out.println(MassageApp.ID_DOES_NOT_EXIST);
             throw new ApplicationException(ResponseCode.NOT_CONTENT);
         }
-
     }
 
     @Override
-    public Contact getContactById(int contactId) throws ApplicationException {
-        if (isThereObjectInStorage(contactId)) {
-            for (Contact contactFromStorage : storage) {
-                if (contactFromStorage.getId() == contactId) {
-                    return contactFromStorage;
-                }
-            }
-        }
-        System.out.println(MassageApp.THERE_IS_NOT_ID);
-        throw new ApplicationException(ResponseCode.NOT_CONTENT);
+    public Contact getContactById(int contactId) {
+        return storage.stream().
+                filter(contactFromStorage -> contactFromStorage.getId() == contactId).findFirst().get();
     }
-
 
     public void showContacts() {
-        for (Contact contactFromStorage : storage) {
-            if (Objects.nonNull(contactFromStorage)) {
-                System.out.println(contactFromStorage);
-            }
-        }
+        Stream<Contact> sortContacts = storage.stream().sorted(Comparator.comparing(Contact::getId));
+        sortContacts.forEach(System.out::println);
     }
 
     @Override
-    public Contact updateContactById(int contactId) throws ApplicationException {
-        for (Contact contactFromStorage : storage) {
-            if (contactFromStorage.getId() == contactId) {
-                return contactFromStorage;
-            }
-        }
-        System.out.println(MassageApp.ID_DOES_NOT_EXIST);
-        throw new ApplicationException(ResponseCode.OBJECT_WAS_NOT_CHANGED);
+    public Contact updateContactById(int contactId) {
+        return storage.stream().
+                filter(contactFromStorage -> contactFromStorage.getId() == contactId).findFirst().get();
     }
 
     private void searchSameContact(Contact contact) throws ApplicationException {
@@ -88,15 +66,9 @@ public class ContactDaoImpl implements ContactDao {
         }
     }
 
-    public boolean isThereObjectInStorage(int id) {
-        for (Contact contactFromStorage : storage) {
-            if (Objects.nonNull(contactFromStorage)) {
-                if (contactFromStorage.getId() == id) {
-                    return true;
-                }
-            }
-        }
-        return false;
+    private boolean isThereObjectInStorage(int id) {
+        return storage.stream().
+                anyMatch(contact -> contact.getId() == id);
     }
 
     public Set getStorage() {
