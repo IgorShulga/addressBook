@@ -11,11 +11,11 @@ import java.util.stream.Stream;
 
 public class ContactDaoImpl implements ContactDao {
 
-    public static int generator = 0;
-
     private Set<Contact> storage = new TreeSet<>(Comparator.comparing(Contact::getName).
             thenComparing(Contact::getSurNume).
             thenComparing(Contact::getPhoneNumber));
+
+    public static int generator = 0;
 
     public void saveContact(Contact contact) throws ApplicationException {
         searchSameContact(contact);
@@ -62,14 +62,9 @@ public class ContactDaoImpl implements ContactDao {
     }
 
     private void searchSameContact(Contact contact) throws ApplicationException {
-        for (Contact contactFromStore : storage) {
-            if (Objects.nonNull(contactFromStore)
-                    && contact.getName().equals(contactFromStore.getName())
-                    && contact.getPhoneNumber().equals(contactFromStore.getPhoneNumber())
-                    && contact.getSurNume().equals(contactFromStore.getSurNume())) {
-                System.out.println(MassageApp.OBJECT_EXIST);
-                throw new ApplicationException(ResponseCode.OBJECT_EXIST);
-            }
+        if (storage.stream().filter(Objects::nonNull).anyMatch(contact::equals)) {
+            System.out.println(MassageApp.OBJECT_EXIST);
+            throw new ApplicationException(ResponseCode.OBJECT_EXIST);
         }
     }
 

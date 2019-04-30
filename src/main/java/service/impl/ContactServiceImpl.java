@@ -52,7 +52,7 @@ public class ContactServiceImpl implements ContactService {
 
             int index = scanner.nextInt();
             Contact contact = contactDaoImpl.getContactById(index);
-            contactDaoImpl.updateContactById(contact);
+            contactDaoImpl.updateContactById(index);
             System.out.println("You updating this contact: " + contact.toString());
             return editContact(scanner, contact);
 
