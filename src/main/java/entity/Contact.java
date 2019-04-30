@@ -56,7 +56,6 @@ public class Contact {
 
         Contact contact = (Contact) o;
 
-        if (id != contact.id) return false;
         if (!Objects.equals(name, contact.name)) return false;
         if (!Objects.equals(surNume, contact.surNume)) return false;
         return Objects.equals(phoneNumber, contact.phoneNumber);
@@ -64,8 +63,7 @@ public class Contact {
 
     @Override
     public int hashCode() {
-        int result = id;
-        result = 31 * result + (name != null ? name.hashCode() : 0);
+        int result = name != null ? name.hashCode() : 0;
         result = 31 * result + (surNume != null ? surNume.hashCode() : 0);
         result = 31 * result + (phoneNumber != null ? phoneNumber.hashCode() : 0);
         return result;
