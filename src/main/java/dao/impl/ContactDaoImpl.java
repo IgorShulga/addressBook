@@ -26,7 +26,7 @@ public class ContactDaoImpl implements ContactDao {
 
     @Override
     public void deleteContactById(int contactId) throws ApplicationException {
-        if (isThereObjectInStorage(contactId)) {
+        if (isThereExistContact(contactId)) {
             storage.removeIf(contact -> contact.getId() == contactId);
         } else {
             System.out.println(MassageApp.ID_DOES_NOT_EXIST);
@@ -36,12 +36,12 @@ public class ContactDaoImpl implements ContactDao {
 
     @Override
     public Contact getContactById(int contactId) throws ApplicationException {
-        if (!isThereObjectInStorage(contactId)) {
+        if (isThereExistContact(contactId)) {
+            return Optional.of(storage.stream().
+                    filter(contactFromStorage -> contactFromStorage.getId() == contactId).findFirst().get()).get();
+        } else {
             System.out.println(MassageApp.ID_DOES_NOT_EXIST);
             throw new ApplicationException(ResponseCode.NOT_FOUND);
-        } else {
-            return storage.stream().
-                    filter(contactFromStorage -> contactFromStorage.getId() == contactId).findFirst().get();
         }
     }
 
@@ -62,13 +62,14 @@ public class ContactDaoImpl implements ContactDao {
     }
 
     private void searchSameContact(Contact contact) throws ApplicationException {
-        if (storage.stream().filter(Objects::nonNull).anyMatch(contact::equals)) {
+//        if (Optional.of(storage.stream().anyMatch(contact::equals)).get()) { //second variant
+        if (Optional.of(storage.contains(contact)).get()) {
             System.out.println(MassageApp.OBJECT_EXIST);
             throw new ApplicationException(ResponseCode.OBJECT_EXIST);
         }
     }
 
-    private boolean isThereObjectInStorage(int id) {
+    private boolean isThereExistContact(int id) {
         return storage.stream().anyMatch(contact -> contact.getId() == id);
     }
 
