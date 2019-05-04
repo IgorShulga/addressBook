@@ -36,18 +36,16 @@ public class ContactDaoImpl implements ContactDao {
 
     @Override
     public Contact getContactById(int contactId) throws ApplicationException {
-        if (isThereExistContact(contactId)) {
-            return Optional.of(storage.stream().
-                    filter(contactFromStorage -> contactFromStorage.getId() == contactId).findFirst().get()).get();
-        } else {
-            System.out.println(MassageApp.ID_DOES_NOT_EXIST);
-            throw new ApplicationException(ResponseCode.NOT_FOUND);
-        }
+        return Optional.of(storage.stream().
+                filter(contactFromStorage -> contactFromStorage.getId() == contactId).findFirst()).get().
+                orElseThrow(() -> new ApplicationException(ResponseCode.NOT_FOUND, MassageApp.ID_DOES_NOT_EXIST));
     }
 
+
     public void showContacts() {
-        Stream<Contact> sortContacts = storage.stream().sorted(Comparator.comparing(Contact::getId));
-        sortContacts.forEach(System.out::println);
+        storage.stream().
+                sorted(Comparator.comparing(Contact::getId)).
+                forEach(System.out::println);
     }
 
     @Override
