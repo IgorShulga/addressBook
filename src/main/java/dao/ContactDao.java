@@ -22,7 +22,7 @@ public interface ContactDao {
     /**
      * This method print all contacts of address book.
      */
-    void showContacts();
+    void showContacts() throws ApplicationException;
 
     /**
      * This method update all fields the contact.

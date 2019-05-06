@@ -38,5 +38,5 @@ public interface ContactService {
      *
      * @param scanner takes keyboard input
      */
-    void showAllContacts(Scanner scanner);
+    void showAllContacts(Scanner scanner) throws ApplicationException;
 }

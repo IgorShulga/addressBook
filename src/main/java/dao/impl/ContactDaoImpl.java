@@ -7,7 +7,6 @@ import exception.ApplicationException;
 import constants.ResponseCode;
 
 import java.util.*;
-import java.util.stream.Stream;
 
 public class ContactDaoImpl implements ContactDao {
 
@@ -29,8 +28,7 @@ public class ContactDaoImpl implements ContactDao {
         if (isThereExistContact(contactId)) {
             storage.removeIf(contact -> contact.getId() == contactId);
         } else {
-            System.out.println(MassageApp.ID_DOES_NOT_EXIST);
-            throw new ApplicationException(ResponseCode.NOT_CONTENT);
+            throw new ApplicationException(ResponseCode.NOT_CONTENT, MassageApp.ID_DOES_NOT_EXIST);
         }
     }
 
@@ -42,7 +40,10 @@ public class ContactDaoImpl implements ContactDao {
     }
 
 
-    public void showContacts() {
+    public void showContacts() throws ApplicationException {
+        if(storage.isEmpty()){
+            throw new ApplicationException(ResponseCode.STORAGE_IS_EMPTY, MassageApp.STORAGE_IS_EMPTY);
+        }
         storage.stream().
                 sorted(Comparator.comparing(Contact::getId)).
                 forEach(System.out::println);
@@ -54,16 +55,15 @@ public class ContactDaoImpl implements ContactDao {
                 filter(contactFromStorage -> contactFromStorage.getId() == contactId).findFirst().get();
     }
 
-    public Contact updateContactById(Contact contact) {
+    public Contact updateContactByContact(Contact contact) {
         return storage.stream().
                 filter(contactFromStorage -> contactFromStorage.equals(contact)).findFirst().get();
     }
 
     private void searchSameContact(Contact contact) throws ApplicationException {
-//        if (Optional.of(storage.stream().anyMatch(contact::equals)).get()) { //second variant
+//        if (Optional.of(storage.stream().anyMatch(contact::equals)).get()) { //second variant implement
         if (Optional.of(storage.contains(contact)).get()) {
-            System.out.println(MassageApp.OBJECT_EXIST);
-            throw new ApplicationException(ResponseCode.OBJECT_EXIST);
+            throw new ApplicationException(ResponseCode.OBJECT_EXIST, MassageApp.OBJECT_EXIST);
         }
     }
 

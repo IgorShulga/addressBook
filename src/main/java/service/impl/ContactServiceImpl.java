@@ -43,20 +43,19 @@ public class ContactServiceImpl implements ContactService {
 
     @Override
     public Contact updateContact(Scanner scanner) throws ApplicationException {
-        if (contactDaoImpl.getStorage().isEmpty()) {
-            System.out.println(MassageApp.STORAGE_IS_EMPTY);
-            throw new ApplicationException(ResponseCode.STORAGE_IS_EMPTY);
-        } else {
+        if (!contactDaoImpl.getStorage().isEmpty()) {
             contactDaoImpl.showContacts();
             System.out.println("Enter please contacts ID what you want update");
-
-            int index = scanner.nextInt();
-            Contact contact = contactDaoImpl.getContactById(index);
-            contactDaoImpl.updateContactById(index);
-            System.out.println("You updating this contact: " + contact.toString());
-            return editContact(scanner, contact);
-
+            String string = scanner.next();
+            if (isInteger(string)) {
+                int index = Integer.parseInt(string);
+                Contact contact = contactDaoImpl.getContactById(index);
+                contactDaoImpl.updateContactById(index);
+                System.out.println("You updating this contact: " + contact.toString());
+                return editContact(scanner, contact);
+            }
         }
+        throw new ApplicationException(ResponseCode.STORAGE_IS_EMPTY, MassageApp.STORAGE_IS_EMPTY);
     }
 
     private Contact editContact(Scanner scanner, Contact contact) throws ApplicationException {
@@ -67,34 +66,38 @@ public class ContactServiceImpl implements ContactService {
                     "2 - update Sur name" + "\n" +
                     "3 - update phone number" + "\n" +
                     "0 - finish update");
-            int number = scanner.nextInt();
-            switch (number) {
-                case NAME: {
-                    return editFieldOfContact(NAME, contact, scanner);
-                }
-                case SUR_NAME: {
-                    return editFieldOfContact(SUR_NAME, contact, scanner);
-                }
-                case PHONE_NUMBER: {
-                    return editFieldOfContact(PHONE_NUMBER, contact, scanner);
-                }
-                case EXIT: {
-                    System.out.println("You exited from update mode.");
-                    exit = false;
-                    break;
-                }
-                default: {
-                    System.out.println("Sorry. You enter wrong number of menu. We don't change contact. ");
-                    throw new ApplicationException(ResponseCode.WRONG_DATA_TYPE);
+            String str = scanner.next();
+            if (isInteger(str)) {
+                int number = Integer.parseInt(str);
+                switch (number) {
+                    case NAME: {
+                        return editFieldOfContact(NAME, contact, scanner);
+                    }
+                    case SUR_NAME: {
+                        return editFieldOfContact(SUR_NAME, contact, scanner);
+                    }
+                    case PHONE_NUMBER: {
+                        return editFieldOfContact(PHONE_NUMBER, contact, scanner);
+                    }
+                    case EXIT: {
+                        System.out.println("You exited from update mode.");
+                        exit = false;
+                        break;
+                    }
+                    default: {
+                        System.out.println("Sorry. You enter wrong number of menu. We don't change contact. ");
+                        throw new ApplicationException(ResponseCode.WRONG_DATA_TYPE);
+                    }
                 }
             }
         } while (exit);
         return contact;
     }
 
-    private Contact editFieldOfContact(int numberOfField, Contact contact, Scanner scanner) {
+    public Contact editFieldOfContact(int numberOfField, Contact contact, Scanner scanner) throws ApplicationException {
         System.out.println(MassageApp.ENTER_VALUE_FIELD);
         String str = scanner.next();
+        isInteger(str);
         switch (numberOfField) {
             case ContactService.NAME: {
                 contact.setName(str);
@@ -117,19 +120,33 @@ public class ContactServiceImpl implements ContactService {
     @Override
     public void deleteContact(Scanner scanner) throws ApplicationException {
         if (contactDaoImpl.getStorage().isEmpty()) {
-            System.out.println(MassageApp.STORAGE_IS_EMPTY);
-            throw new ApplicationException(ResponseCode.NOT_CONTENT);
+            throw new ApplicationException(ResponseCode.NOT_CONTENT, MassageApp.STORAGE_IS_EMPTY);
         } else {
             contactDaoImpl.showContacts();
             System.out.println("Enter please contacts ID what you want delete");
-            int contactIdForDelete = scanner.nextInt();
-            contactDaoImpl.deleteContactById(contactIdForDelete);
-            System.out.println("Your contact was delete.");
+            String stringTemp = scanner.next();
+            if (isInteger(stringTemp)) {
+                int contactIdForDelete = Integer.parseInt(stringTemp);
+                contactDaoImpl.deleteContactById(contactIdForDelete);
+                System.out.println("Your contact was delete.");
+            }
         }
     }
 
     @Override
-    public void showAllContacts(Scanner scanner) {
+    public void showAllContacts(Scanner scanner) throws ApplicationException {
         contactDaoImpl.showContacts();
+    }
+
+    public boolean isInteger(String str) {
+        try {
+            Integer.parseInt(str);
+        } catch (NumberFormatException e) {
+            System.out.println(ResponseCode.WRONG_DATA_TYPE + " " + MassageApp.DATA_TYPE_IS_NOT_NUMBER);
+            return false;
+        } catch (NullPointerException e) {
+            System.out.println(ResponseCode.NOT_CONTENT + " " + MassageApp.STRING_IS_NULL);
+        }
+        return true;
     }
 }
