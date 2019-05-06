@@ -50,9 +50,10 @@ public class ContactDaoImpl implements ContactDao {
     }
 
     @Override
-    public Contact updateContactById(int contactId) {
-        return storage.stream().
-                filter(contactFromStorage -> contactFromStorage.getId() == contactId).findFirst().get();
+    public Contact updateContactById(int contactId) throws ApplicationException {
+        return Optional.of(storage.stream().
+                filter(contactFromStorage -> contactFromStorage.getId() == contactId).findFirst()).get().
+                orElseThrow(() -> new ApplicationException(ResponseCode.NOT_FOUND, MassageApp.ID_DOES_NOT_EXIST));
     }
 
     public Contact updateContactByContact(Contact contact) {

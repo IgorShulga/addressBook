@@ -3,6 +3,7 @@ package service;
 import constants.MassageApp;
 import exception.ApplicationException;
 import constants.ResponseCode;
+import service.impl.CommandLineServiceImpl;
 import service.impl.ContactServiceImpl;
 
 import java.text.NumberFormat;
@@ -16,7 +17,7 @@ public interface CommandLIneService {
      */
     static void showMenu() {
         System.out.println("1.Add contact.");
-        System.out.println("2.Update contact.");
+        System.out.println("2.Update contact. ");
         System.out.println("3.Delete contact.");
         System.out.println("4.Show all contact.");
         System.out.println("0.Exit.;");
@@ -77,8 +78,8 @@ public interface CommandLIneService {
     static boolean isCorrectData(String str) {
         try {
             Integer.parseInt(str);
-        } catch (NullPointerException | NumberFormatException e) {
-            System.out.println(MassageApp.WRONG_DATA_TYPE);
+        } catch (NumberFormatException | NullPointerException e) {
+            System.out.println(ResponseCode.WRONG_DATA_TYPE + " " + MassageApp.DATA_TYPE_IS_NOT_NUMBER);
             return false;
         }
         return true;

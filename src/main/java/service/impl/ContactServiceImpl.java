@@ -6,12 +6,13 @@ import dao.impl.ContactDaoImpl;
 import entity.Contact;
 import exception.ApplicationException;
 import constants.ResponseCode;
+import service.CommandLIneService;
 import service.ContactService;
 
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
-public class ContactServiceImpl implements ContactService {
+public class ContactServiceImpl extends CommandLineServiceImpl implements ContactService {
 
     private ContactDaoImpl contactDaoImpl;
 
@@ -47,7 +48,7 @@ public class ContactServiceImpl implements ContactService {
             contactDaoImpl.showContacts();
             System.out.println("Enter please contacts ID what you want update");
             String string = scanner.next();
-            if (isInteger(string)) {
+            if (CommandLIneService.isCorrectData(string)) {
                 int index = Integer.parseInt(string);
                 Contact contact = contactDaoImpl.getContactById(index);
                 contactDaoImpl.updateContactById(index);
@@ -66,9 +67,9 @@ public class ContactServiceImpl implements ContactService {
                     "2 - update Sur name" + "\n" +
                     "3 - update phone number" + "\n" +
                     "0 - finish update");
-            String str = scanner.next();
-            if (isInteger(str)) {
-                int number = Integer.parseInt(str);
+            String tempString = scanner.next();
+            if (CommandLIneService.isCorrectData(tempString)) {
+                int number = Integer.parseInt(tempString);
                 switch (number) {
                     case NAME: {
                         return editFieldOfContact(NAME, contact, scanner);
@@ -94,21 +95,21 @@ public class ContactServiceImpl implements ContactService {
         return contact;
     }
 
-    public Contact editFieldOfContact(int numberOfField, Contact contact, Scanner scanner) throws ApplicationException {
+    private Contact editFieldOfContact(int numberOfField, Contact contact, Scanner scanner) throws ApplicationException {
         System.out.println(MassageApp.ENTER_VALUE_FIELD);
-        String str = scanner.next();
-        isInteger(str);
+        String tempString = scanner.next();
+        CommandLIneService.isCorrectData(tempString);
         switch (numberOfField) {
             case ContactService.NAME: {
-                contact.setName(str);
+                contact.setName(tempString);
                 break;
             }
             case ContactService.SUR_NAME: {
-                contact.setSurNume(str);
+                contact.setSurNume(tempString);
                 break;
             }
             case ContactService.PHONE_NUMBER: {
-                contact.setPhoneNumber(str);
+                contact.setPhoneNumber(tempString);
                 break;
             }
         }
@@ -125,7 +126,7 @@ public class ContactServiceImpl implements ContactService {
             contactDaoImpl.showContacts();
             System.out.println("Enter please contacts ID what you want delete");
             String stringTemp = scanner.next();
-            if (isInteger(stringTemp)) {
+            if (CommandLIneService.isCorrectData(stringTemp)) {
                 int contactIdForDelete = Integer.parseInt(stringTemp);
                 contactDaoImpl.deleteContactById(contactIdForDelete);
                 System.out.println("Your contact was delete.");
@@ -136,17 +137,5 @@ public class ContactServiceImpl implements ContactService {
     @Override
     public void showAllContacts(Scanner scanner) throws ApplicationException {
         contactDaoImpl.showContacts();
-    }
-
-    public boolean isInteger(String str) {
-        try {
-            Integer.parseInt(str);
-        } catch (NumberFormatException e) {
-            System.out.println(ResponseCode.WRONG_DATA_TYPE + " " + MassageApp.DATA_TYPE_IS_NOT_NUMBER);
-            return false;
-        } catch (NullPointerException e) {
-            System.out.println(ResponseCode.NOT_CONTENT + " " + MassageApp.STRING_IS_NULL);
-        }
-        return true;
     }
 }
