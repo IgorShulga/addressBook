@@ -10,14 +10,11 @@ import java.util.*;
 
 public class ContactDaoImpl implements ContactDao {
 
-    public static int generator = 0;
+    private Set<Contact> storage = new TreeSet<>(Comparator.comparing(Contact::getName)
+            .thenComparing(Contact::getSurNume)
+            .thenComparing(Contact::getPhoneNumber));
 
-    private Set<Contact> storage = new TreeSet(new Comparator<Contact>() {
-        @Override
-        public int compare(Contact o1, Contact o2) {
-            return o1.getPhoneNumber().compareTo(o2.getPhoneNumber());
-        }
-    });
+    public static int generator = 0;
 
     public void saveContact(Contact contact) throws ApplicationException {
         searchSameContact(contact);
@@ -26,77 +23,66 @@ public class ContactDaoImpl implements ContactDao {
         storage.add(contact);
     }
 
-
     @Override
     public void deleteContactById(int contactId) throws ApplicationException {
-        if (isThereObjectInStorage(contactId)) {
-            for (Contact contactFromStorage : storage) {
-                if (contactFromStorage.getId() == contactId) {
-                    storage.remove(contactFromStorage);
-                    break;
-                }
-            }
+        if (isThereExistContact(contactId)) {
+            storage
+                    .removeIf(contact -> contact.getId() == contactId);
         } else {
-            System.out.println(MassageApp.ID_DOES_NOT_EXIST);
-            throw new ApplicationException(ResponseCode.NOT_CONTENT);
+            throw new ApplicationException(ResponseCode.NOT_CONTENT, MassageApp.ID_DOES_NOT_EXIST);
         }
-
     }
 
     @Override
     public Contact getContactById(int contactId) throws ApplicationException {
-        if (isThereObjectInStorage(contactId)) {
-            for (Contact contactFromStorage : storage) {
-                if (contactFromStorage.getId() == contactId) {
-                    return contactFromStorage;
-                }
-            }
-        }
-        System.out.println(MassageApp.THERE_IS_NOT_ID);
-        throw new ApplicationException(ResponseCode.NOT_CONTENT);
+        return Optional.of(storage.stream()
+                .filter(contactFromStorage -> contactFromStorage.getId() == contactId)
+                .findFirst())
+                .get()
+                .orElseThrow(() -> new ApplicationException(ResponseCode.NOT_FOUND, MassageApp.ID_DOES_NOT_EXIST));
     }
 
 
-    public void showContacts() {
-        for (Contact contactFromStorage : storage) {
-            if (Objects.nonNull(contactFromStorage)) {
-                System.out.println(contactFromStorage);
-            }
+    public void showContacts() throws ApplicationException {
+        if (storage.isEmpty()) {
+            throw new ApplicationException(ResponseCode.STORAGE_IS_EMPTY, MassageApp.STORAGE_IS_EMPTY);
         }
+        storage
+                .stream()
+                .sorted(Comparator.comparing(Contact::getId))
+                .forEach(System.out::println);
     }
 
     @Override
     public Contact updateContactById(int contactId) throws ApplicationException {
-        for (Contact contactFromStorage : storage) {
-            if (contactFromStorage.getId() == contactId) {
-                return contactFromStorage;
-            }
-        }
-        System.out.println(MassageApp.ID_DOES_NOT_EXIST);
-        throw new ApplicationException(ResponseCode.OBJECT_WAS_NOT_CHANGED);
+        return Optional.of(storage
+                .stream()
+                .filter(contactFromStorage -> contactFromStorage.getId() == contactId)
+                .findFirst())
+                .get()
+                .orElseThrow(() -> new ApplicationException(ResponseCode.NOT_FOUND, MassageApp.ID_DOES_NOT_EXIST));
+    }
+
+    public Contact updateContactByContact(Contact contact) {
+        return storage
+                .stream()
+                .filter(contactFromStorage -> contactFromStorage.equals(contact))
+                .findFirst()
+                .get();
     }
 
     private void searchSameContact(Contact contact) throws ApplicationException {
-        for (Contact contactFromStorage : storage) {
-            if (Objects.nonNull(contactFromStorage)
-                    && contact.getName().equals(contactFromStorage.getName())
-                    && contact.getPhoneNumber().equals(contactFromStorage.getPhoneNumber())
-                    && contact.getSurNume().equals(contactFromStorage.getSurNume())) {
-                System.out.println(MassageApp.OBJECT_EXIST);
-                throw new ApplicationException(ResponseCode.OBJECT_EXIST);
-            }
+        if (storage
+                .stream()
+                .anyMatch(contact::equals)) {
+            throw new ApplicationException(ResponseCode.OBJECT_EXIST, MassageApp.OBJECT_EXIST);
         }
     }
 
-    public boolean isThereObjectInStorage(int id) {
-        for (Contact contactFromStorage : storage) {
-            if (Objects.nonNull(contactFromStorage)) {
-                if (contactFromStorage.getId() == id) {
-                    return true;
-                }
-            }
-        }
-        return false;
+    private boolean isThereExistContact(int id) {
+        return storage
+                .stream()
+                .anyMatch(contact -> contact.getId() == id);
     }
 
     public Set getStorage() {

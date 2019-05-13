@@ -6,11 +6,13 @@ import dao.impl.ContactDaoImpl;
 import entity.Contact;
 import exception.ApplicationException;
 import constants.ResponseCode;
+import service.CommandLIneService;
 import service.ContactService;
 
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
-public class ContactServiceImpl implements ContactService {
+public class ContactServiceImpl extends CommandLineServiceImpl implements ContactService {
 
     private ContactDaoImpl contactDaoImpl;
 
@@ -26,11 +28,11 @@ public class ContactServiceImpl implements ContactService {
         String name = scanner.next();
         contact.setName(name);
 
-        System.out.println(MassageApp.ENTER_VALUE_FIELD  + " Surname - ");
+        System.out.println(MassageApp.ENTER_VALUE_FIELD + " Surname - ");
         String surName = scanner.next();
         contact.setSurNume(surName);
 
-        System.out.println(MassageApp.ENTER_VALUE_FIELD  + " Phone number - ");
+        System.out.println(MassageApp.ENTER_VALUE_FIELD + " Phone number - ");
         String phoneNumber = scanner.next().replaceAll("[^0-9+]", "");
         contact.setPhoneNumber(phoneNumber);
 
@@ -42,17 +44,19 @@ public class ContactServiceImpl implements ContactService {
 
     @Override
     public Contact updateContact(Scanner scanner) throws ApplicationException {
-        if (contactDaoImpl.getStorage().isEmpty()) {
-            System.out.println(MassageApp.STORAGE_IS_EMPTY);
-            throw new ApplicationException(ResponseCode.STORAGE_IS_EMPTY);
-        } else {
+        if (!contactDaoImpl.getStorage().isEmpty()) {
             contactDaoImpl.showContacts();
             System.out.println("Enter please contacts ID what you want update");
-            int contactId = scanner.nextInt();
-            Contact contact = contactDaoImpl.updateContactById(contactId);
-            System.out.println("You updating this contact: " + contact.toString());
-            return editContact(scanner, contact);
+            String string = scanner.next();
+            if (CommandLIneService.isCorrectData(string)) {
+                int index = Integer.parseInt(string);
+                Contact contact = contactDaoImpl.getContactById(index);
+                contactDaoImpl.updateContactById(index);
+                System.out.println("You updating this contact: " + contact.toString());
+                return editContact(scanner, contact);
+            }
         }
+        throw new ApplicationException(ResponseCode.STORAGE_IS_EMPTY, MassageApp.STORAGE_IS_EMPTY);
     }
 
     private Contact editContact(Scanner scanner, Contact contact) throws ApplicationException {
@@ -63,7 +67,9 @@ public class ContactServiceImpl implements ContactService {
                     "2 - update Sur name" + "\n" +
                     "3 - update phone number" + "\n" +
                     "0 - finish update");
-                int number = scanner.nextInt();
+            String tempString = scanner.next();
+            if (CommandLIneService.isCorrectData(tempString)) {
+                int number = Integer.parseInt(tempString);
                 switch (number) {
                     case NAME: {
                         return editFieldOfContact(NAME, contact, scanner);
@@ -84,24 +90,26 @@ public class ContactServiceImpl implements ContactService {
                         throw new ApplicationException(ResponseCode.WRONG_DATA_TYPE);
                     }
                 }
+            }
         } while (exit);
         return contact;
     }
 
-    private Contact editFieldOfContact(int numberOfField, Contact contact, Scanner scanner) {
+    private Contact editFieldOfContact(int numberOfField, Contact contact, Scanner scanner) throws ApplicationException {
         System.out.println(MassageApp.ENTER_VALUE_FIELD);
-        String str = scanner.next();
+        String tempString = scanner.next();
+        CommandLIneService.isCorrectData(tempString);
         switch (numberOfField) {
             case ContactService.NAME: {
-                contact.setName(str);
+                contact.setName(tempString);
                 break;
             }
             case ContactService.SUR_NAME: {
-                contact.setSurNume(str);
+                contact.setSurNume(tempString);
                 break;
             }
             case ContactService.PHONE_NUMBER: {
-                contact.setPhoneNumber(str);
+                contact.setPhoneNumber(tempString);
                 break;
             }
         }
@@ -113,19 +121,21 @@ public class ContactServiceImpl implements ContactService {
     @Override
     public void deleteContact(Scanner scanner) throws ApplicationException {
         if (contactDaoImpl.getStorage().isEmpty()) {
-            System.out.println(MassageApp.STORAGE_IS_EMPTY);
-            throw new ApplicationException(ResponseCode.NOT_CONTENT);
+            throw new ApplicationException(ResponseCode.NOT_CONTENT, MassageApp.STORAGE_IS_EMPTY);
         } else {
             contactDaoImpl.showContacts();
             System.out.println("Enter please contacts ID what you want delete");
-            int contactIdForDelete = scanner.nextInt();
-            contactDaoImpl.deleteContactById(contactIdForDelete);
-            System.out.println("Your contact was delete.");
+            String stringTemp = scanner.next();
+            if (CommandLIneService.isCorrectData(stringTemp)) {
+                int contactIdForDelete = Integer.parseInt(stringTemp);
+                contactDaoImpl.deleteContactById(contactIdForDelete);
+                System.out.println("Your contact was delete.");
+            }
         }
     }
 
     @Override
-    public void showAllContacts(Scanner scanner) {
+    public void showAllContacts(Scanner scanner) throws ApplicationException {
         contactDaoImpl.showContacts();
     }
 }

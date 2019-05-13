@@ -7,12 +7,10 @@ public class ApplicationException extends Exception {
     private String messageOfException;
     private ResponseCode code;
 
-    public ApplicationException() {
-    }
-
     public ApplicationException(ResponseCode code, String messageOfException) {
         this.messageOfException = messageOfException;
         this.code = code;
+        System.out.println(messageOfException);
     }
 
     public ApplicationException(ResponseCode code) {
