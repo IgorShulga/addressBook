@@ -6,6 +6,8 @@ import entity.Contact;
 import exception.ApplicationException;
 import constants.ResponseCode;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 
 public class ContactDaoImpl implements ContactDao {
@@ -14,12 +16,13 @@ public class ContactDaoImpl implements ContactDao {
             .thenComparing(Contact::getSurNume)
             .thenComparing(Contact::getPhoneNumber));
 
-    public static int generator = 0;
+    private static int generator = 0;
 
     public void saveContact(Contact contact) throws ApplicationException {
         searchSameContact(contact);
         generator++;
         contact.setId(generator);
+        contact.setCreateDate(LocalDateTime.now());
         storage.add(contact);
     }
 

@@ -10,6 +10,9 @@ public interface ContactService {
     int NAME = 1;
     int SUR_NAME = 2;
     int PHONE_NUMBER = 3;
+    int AGE = 4;
+    int HEIGHT = 5;
+    int MARRIED = 6;
     int EXIT = 0;
 
     /**

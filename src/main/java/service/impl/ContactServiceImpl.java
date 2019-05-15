@@ -10,6 +10,7 @@ import service.CommandLIneService;
 import service.ContactService;
 
 import java.util.InputMismatchException;
+import java.util.Objects;
 import java.util.Scanner;
 
 public class ContactServiceImpl extends CommandLineServiceImpl implements ContactService {
@@ -35,6 +36,25 @@ public class ContactServiceImpl extends CommandLineServiceImpl implements Contac
         System.out.println(MassageApp.ENTER_VALUE_FIELD + " Phone number - ");
         String phoneNumber = scanner.next().replaceAll("[^0-9+]", "");
         contact.setPhoneNumber(phoneNumber);
+
+        System.out.println(MassageApp.ENTER_VALUE_FIELD + " Age - ");
+        int age = scanner.nextInt();
+        contact.setAge(age);
+
+        System.out.println(MassageApp.ENTER_VALUE_FIELD + " Height - ");
+        double height = scanner.nextDouble();
+        contact.setHeight(height);
+
+        System.out.println(MassageApp.ENTER_VALUE_FIELD + " Are you married? " +
+                "(Enter '1' if you unmarried and '2' if you married) - ");
+        boolean married;
+        String entreString = scanner.next();
+        if(entreString.equals("2")){
+            married = true;
+        } else {
+            married = false;
+        }
+        contact.setMarried(married);
 
         contactDaoImpl.saveContact(contact);
 
@@ -66,6 +86,9 @@ public class ContactServiceImpl extends CommandLineServiceImpl implements Contac
                     "1 - update Name" + "\n" +
                     "2 - update Sur name" + "\n" +
                     "3 - update phone number" + "\n" +
+                    "4 - update age" + "\n" +
+                    "5 - update height" + "\n" +
+                    "6 - update married" + "\n" +
                     "0 - finish update");
             String tempString = scanner.next();
             if (CommandLIneService.isCorrectData(tempString)) {
@@ -79,6 +102,15 @@ public class ContactServiceImpl extends CommandLineServiceImpl implements Contac
                     }
                     case PHONE_NUMBER: {
                         return editFieldOfContact(PHONE_NUMBER, contact, scanner);
+                    }
+                    case AGE: {
+                        return editFieldOfContact(AGE, contact, scanner);
+                    }
+                    case HEIGHT: {
+                        return editFieldOfContact(HEIGHT, contact, scanner);
+                    }
+                    case MARRIED: {
+                        return editFieldOfContact(MARRIED, contact, scanner);
                     }
                     case EXIT: {
                         System.out.println("You exited from update mode.");
@@ -95,7 +127,7 @@ public class ContactServiceImpl extends CommandLineServiceImpl implements Contac
         return contact;
     }
 
-    private Contact editFieldOfContact(int numberOfField, Contact contact, Scanner scanner) throws ApplicationException {
+    private Contact editFieldOfContact(int numberOfField, Contact contact, Scanner scanner) {
         System.out.println(MassageApp.ENTER_VALUE_FIELD);
         String tempString = scanner.next();
         CommandLIneService.isCorrectData(tempString);
@@ -110,6 +142,18 @@ public class ContactServiceImpl extends CommandLineServiceImpl implements Contac
             }
             case ContactService.PHONE_NUMBER: {
                 contact.setPhoneNumber(tempString);
+                break;
+            }
+            case ContactService.AGE: {
+                contact.setAge(Integer.parseInt(tempString));
+                break;
+            }
+            case ContactService.HEIGHT: {
+                contact.setHeight(Integer.parseInt(tempString));
+                break;
+            }
+            case ContactService.MARRIED: {
+                contact.setMarried(Boolean.parseBoolean(tempString));
                 break;
             }
         }
