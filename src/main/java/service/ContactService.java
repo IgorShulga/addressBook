@@ -3,6 +3,8 @@ package service;
 import entity.Contact;
 import exception.ApplicationException;
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.util.Scanner;
 
 public interface ContactService {
@@ -18,28 +20,28 @@ public interface ContactService {
     /**
      * This method created new contact in address book.
      *
-     * @param scanner takes keyboard input
+     * @param readerKeyboard takes keyboard input
      */
-    void addContact(Scanner scanner) throws ApplicationException;
+    void addContact(BufferedReader readerKeyboard) throws ApplicationException, IOException;
 
     /**
      * This method update contact of address book.
      *
-     * @param scanner takes keyboard input
+     * @param readerKeyboard takes keyboard input
      */
-    Contact updateContact(Scanner scanner) throws ApplicationException;
+    Contact updateContact(BufferedReader readerKeyboard) throws ApplicationException, IOException;
 
     /**
      * This method delete contact of address book.
      *
-     * @param scanner takes keyboard input
+     * @param readerKeyboard takes keyboard input
      */
-    void deleteContact(Scanner scanner) throws ApplicationException;
+    void deleteContact(BufferedReader readerKeyboard) throws ApplicationException, IOException;
 
     /**
      * This method print all contacts.
      *
-     * @param scanner takes keyboard input
+     * @param readerKeyboard takes keyboard input
      */
-    void showAllContacts(Scanner scanner) throws ApplicationException;
+    void showAllContacts(BufferedReader readerKeyboard) throws ApplicationException;
 }

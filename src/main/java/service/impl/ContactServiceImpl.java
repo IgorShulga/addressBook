@@ -9,9 +9,8 @@ import constants.ResponseCode;
 import service.CommandLIneService;
 import service.ContactService;
 
-import java.util.InputMismatchException;
-import java.util.Objects;
-import java.util.Scanner;
+import java.io.BufferedReader;
+import java.io.IOException;
 
 public class ContactServiceImpl extends CommandLineServiceImpl implements ContactService {
 
@@ -22,34 +21,41 @@ public class ContactServiceImpl extends CommandLineServiceImpl implements Contac
     }
 
     @Override
-    public void addContact(Scanner scanner) throws ApplicationException {
+    public void addContact(BufferedReader readerKeyboard) throws ApplicationException, IOException {
         Contact contact = new Contact();
 
         System.out.println(MassageApp.ENTER_VALUE_FIELD + " Name - ");
-        String name = scanner.next();
+        String name = readerKeyboard.readLine();
         contact.setName(name);
 
         System.out.println(MassageApp.ENTER_VALUE_FIELD + " Surname - ");
-        String surName = scanner.next();
+        String surName = readerKeyboard.readLine();
         contact.setSurNume(surName);
 
         System.out.println(MassageApp.ENTER_VALUE_FIELD + " Phone number - ");
-        String phoneNumber = scanner.next().replaceAll("[^0-9+]", "");
+        String phoneNumber = readerKeyboard.readLine().replaceAll("[^0-9+]", "");
         contact.setPhoneNumber(phoneNumber);
 
         System.out.println(MassageApp.ENTER_VALUE_FIELD + " Age - ");
-        int age = scanner.nextInt();
-        contact.setAge(age);
+        String stringAge = readerKeyboard.readLine();
+        if (CommandLIneService.isCorrectInteger(stringAge)) {
+            int age = Integer.parseInt(stringAge);
+            contact.setAge(age);
+        }
 
-        System.out.println(MassageApp.ENTER_VALUE_FIELD + " Height - ");
-        double height = scanner.nextDouble();
-        contact.setHeight(height);
+        System.out.println(MassageApp.ENTER_VALUE_FIELD + " Height (m.cm) - ");
+        String stringHeight = readerKeyboard.readLine();
+        if (CommandLIneService.isCorrectDouble(stringHeight)) {
+            double height = Double.parseDouble(stringHeight);
+            contact.setHeight(height);
+        }
 
         System.out.println(MassageApp.ENTER_VALUE_FIELD + " Are you married? " +
                 "(Enter '1' if you unmarried and '2' if you married) - ");
         boolean married;
-        String entreString = scanner.next();
-        if(entreString.equals("2")){
+        String entreString = null;
+        entreString = readerKeyboard.readLine();
+        if (entreString.equals("2")) {
             married = true;
         } else {
             married = false;
@@ -61,25 +67,24 @@ public class ContactServiceImpl extends CommandLineServiceImpl implements Contac
         System.out.println(" This contact was added in your contact book. Thank you for using this contact book.");
     }
 
-
     @Override
-    public Contact updateContact(Scanner scanner) throws ApplicationException {
+    public Contact updateContact(BufferedReader readerKeyboard) throws ApplicationException, IOException {
         if (!contactDaoImpl.getStorage().isEmpty()) {
             contactDaoImpl.showContacts();
             System.out.println("Enter please contacts ID what you want update");
-            String string = scanner.next();
-            if (CommandLIneService.isCorrectData(string)) {
+            String string = readerKeyboard.readLine();
+            if (CommandLIneService.isCorrectInteger(string)) {
                 int index = Integer.parseInt(string);
                 Contact contact = contactDaoImpl.getContactById(index);
                 contactDaoImpl.updateContactById(index);
                 System.out.println("You updating this contact: " + contact.toString());
-                return editContact(scanner, contact);
+                return editContact(readerKeyboard, contact);
             }
         }
         throw new ApplicationException(ResponseCode.STORAGE_IS_EMPTY, MassageApp.STORAGE_IS_EMPTY);
     }
 
-    private Contact editContact(Scanner scanner, Contact contact) throws ApplicationException {
+    private Contact editContact(BufferedReader readerKeyboard, Contact contact) throws ApplicationException, IOException {
         boolean exit = true;
         do {
             System.out.println("Choose field for update: " + "\n" +
@@ -90,27 +95,27 @@ public class ContactServiceImpl extends CommandLineServiceImpl implements Contac
                     "5 - update height" + "\n" +
                     "6 - update married" + "\n" +
                     "0 - finish update");
-            String tempString = scanner.next();
-            if (CommandLIneService.isCorrectData(tempString)) {
+            String tempString = readerKeyboard.readLine();
+            if (CommandLIneService.isCorrectInteger(tempString)) {
                 int number = Integer.parseInt(tempString);
                 switch (number) {
                     case NAME: {
-                        return editFieldOfContact(NAME, contact, scanner);
+                        return editFieldOfContact(NAME, contact, readerKeyboard);
                     }
                     case SUR_NAME: {
-                        return editFieldOfContact(SUR_NAME, contact, scanner);
+                        return editFieldOfContact(SUR_NAME, contact, readerKeyboard);
                     }
                     case PHONE_NUMBER: {
-                        return editFieldOfContact(PHONE_NUMBER, contact, scanner);
+                        return editFieldOfContact(PHONE_NUMBER, contact, readerKeyboard);
                     }
                     case AGE: {
-                        return editFieldOfContact(AGE, contact, scanner);
+                        return editFieldOfContact(AGE, contact, readerKeyboard);
                     }
                     case HEIGHT: {
-                        return editFieldOfContact(HEIGHT, contact, scanner);
+                        return editFieldOfContact(HEIGHT, contact, readerKeyboard);
                     }
                     case MARRIED: {
-                        return editFieldOfContact(MARRIED, contact, scanner);
+                        return editFieldOfContact(MARRIED, contact, readerKeyboard);
                     }
                     case EXIT: {
                         System.out.println("You exited from update mode.");
@@ -127,10 +132,10 @@ public class ContactServiceImpl extends CommandLineServiceImpl implements Contac
         return contact;
     }
 
-    private Contact editFieldOfContact(int numberOfField, Contact contact, Scanner scanner) {
+    private Contact editFieldOfContact(int numberOfField, Contact contact, BufferedReader readerKeyboard) throws IOException {
         System.out.println(MassageApp.ENTER_VALUE_FIELD);
-        String tempString = scanner.next();
-        CommandLIneService.isCorrectData(tempString);
+        String tempString = readerKeyboard.readLine();
+        CommandLIneService.isCorrectInteger(tempString);
         switch (numberOfField) {
             case ContactService.NAME: {
                 contact.setName(tempString);
@@ -161,16 +166,15 @@ public class ContactServiceImpl extends CommandLineServiceImpl implements Contac
         return contact;
     }
 
-
     @Override
-    public void deleteContact(Scanner scanner) throws ApplicationException {
+    public void deleteContact(BufferedReader readerKeyboard) throws ApplicationException, IOException {
         if (contactDaoImpl.getStorage().isEmpty()) {
             throw new ApplicationException(ResponseCode.NOT_CONTENT, MassageApp.STORAGE_IS_EMPTY);
         } else {
             contactDaoImpl.showContacts();
             System.out.println("Enter please contacts ID what you want delete");
-            String stringTemp = scanner.next();
-            if (CommandLIneService.isCorrectData(stringTemp)) {
+            String stringTemp = readerKeyboard.readLine();
+            if (CommandLIneService.isCorrectInteger(stringTemp)) {
                 int contactIdForDelete = Integer.parseInt(stringTemp);
                 contactDaoImpl.deleteContactById(contactIdForDelete);
                 System.out.println("Your contact was delete.");
@@ -179,7 +183,7 @@ public class ContactServiceImpl extends CommandLineServiceImpl implements Contac
     }
 
     @Override
-    public void showAllContacts(Scanner scanner) throws ApplicationException {
+    public void showAllContacts(BufferedReader readerKeyboard) throws ApplicationException {
         contactDaoImpl.showContacts();
     }
 }

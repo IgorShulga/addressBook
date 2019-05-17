@@ -3,12 +3,10 @@ package service;
 import constants.MassageApp;
 import exception.ApplicationException;
 import constants.ResponseCode;
-import service.impl.CommandLineServiceImpl;
 import service.impl.ContactServiceImpl;
 
-import java.text.NumberFormat;
-import java.text.ParsePosition;
-import java.util.Scanner;
+import java.io.BufferedReader;
+import java.io.IOException;
 
 public interface CommandLIneService {
 
@@ -23,14 +21,13 @@ public interface CommandLIneService {
         System.out.println("0.Exit.;");
     }
 
-
     /**
      * Method is start work application
      *
-     * @param scanner takes keyboard input
-     * @param service pass scanner for implementation
+     * @param readerKeyboard takes keyboard input
+     * @param service        pass readerKeyboard for implementation
      */
-    static void run(Scanner scanner, ContactServiceImpl service) throws ApplicationException {
+    static void run(BufferedReader readerKeyboard, ContactServiceImpl service) {
         int numberOfMenu;
         boolean exit = true;
         do {
@@ -38,24 +35,24 @@ public interface CommandLIneService {
             showMenu();
 
             try {
-                String str = scanner.next();
-                if (isCorrectData(str)) {
-                    numberOfMenu = Integer.parseInt(str);
+                String stringTemp = readerKeyboard.readLine();
+                if (isCorrectInteger(stringTemp)) {
+                    numberOfMenu = Integer.parseInt(stringTemp);
                     switch (numberOfMenu) {
                         case 1: {
-                            service.addContact(scanner);
+                            service.addContact(readerKeyboard);
                             break;
                         }
                         case 2: {
-                            service.updateContact(scanner);
+                            service.updateContact(readerKeyboard);
                             break;
                         }
                         case 3: {
-                            service.deleteContact(scanner);
+                            service.deleteContact(readerKeyboard);
                             break;
                         }
                         case 4: {
-                            service.showAllContacts(scanner);
+                            service.showAllContacts(readerKeyboard);
                             break;
                         }
                         case 0: {
@@ -68,16 +65,26 @@ public interface CommandLIneService {
                         }
                     }
                 }
-            } catch (ApplicationException e) {
-                System.out.println("Exception: " + e.getCode().getCode());
+            } catch (ApplicationException | IOException e) {
+                System.out.println("Exception: " + e.getMessage());
             }
         }
         while (exit);
     }
 
-    static boolean isCorrectData(String str) {
+    static boolean isCorrectInteger(String str) {
         try {
             Integer.parseInt(str);
+        } catch (NumberFormatException | NullPointerException e) {
+            System.out.println(ResponseCode.WRONG_DATA_TYPE + " " + MassageApp.DATA_TYPE_IS_NOT_NUMBER);
+            return false;
+        }
+        return true;
+    }
+
+    static boolean isCorrectDouble(String str) {
+        try {
+            Double.parseDouble(str);
         } catch (NumberFormatException | NullPointerException e) {
             System.out.println(ResponseCode.WRONG_DATA_TYPE + " " + MassageApp.DATA_TYPE_IS_NOT_NUMBER);
             return false;
