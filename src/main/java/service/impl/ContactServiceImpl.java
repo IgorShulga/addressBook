@@ -9,10 +9,24 @@ import constants.ResponseCode;
 import service.CommandLIneService;
 import service.ContactService;
 
-import java.io.BufferedReader;
-import java.io.IOException;
+import java.io.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Set;
+
 
 public class ContactServiceImpl extends CommandLineServiceImpl implements ContactService {
+
+    private static final String ID = "ID: ";
+    private static final String NAME = "Name: ";
+    private static final String SUR_NAME = "Surname: ";
+    private static final String PHONE_NUMBER = "Phone Number: ";
+    private static final String AGE = "Age: ";
+    private static final String HEIGHT = "Height: ";
+    private static final String MARRIED = "Married: ";
+    private static final String CREATE_DATE = "Create date: ";
+    private static final String WORD_SEPARATOR = "; ";
+    private static final String SET_PATH = "contacts.txt";
 
     private ContactDaoImpl contactDaoImpl;
 
@@ -62,6 +76,8 @@ public class ContactServiceImpl extends CommandLineServiceImpl implements Contac
         }
         contact.setMarried(married);
 
+        contact.setCreateDate(LocalDateTime.now());
+
         contactDaoImpl.saveContact(contact);
 
         System.out.println(" This contact was added in your contact book. Thank you for using this contact book.");
@@ -99,25 +115,25 @@ public class ContactServiceImpl extends CommandLineServiceImpl implements Contac
             if (CommandLIneService.isCorrectInteger(tempString)) {
                 int number = Integer.parseInt(tempString);
                 switch (number) {
-                    case NAME: {
-                        return editFieldOfContact(NAME, contact, readerKeyboard);
+                    case NAME_BUTTON: {
+                        return editFieldOfContact(NAME_BUTTON, contact, readerKeyboard);
                     }
-                    case SUR_NAME: {
-                        return editFieldOfContact(SUR_NAME, contact, readerKeyboard);
+                    case SUR_NAME_BUTTON: {
+                        return editFieldOfContact(SUR_NAME_BUTTON, contact, readerKeyboard);
                     }
-                    case PHONE_NUMBER: {
-                        return editFieldOfContact(PHONE_NUMBER, contact, readerKeyboard);
+                    case PHONE_NUMBER_BUTTON: {
+                        return editFieldOfContact(PHONE_NUMBER_BUTTON, contact, readerKeyboard);
                     }
-                    case AGE: {
-                        return editFieldOfContact(AGE, contact, readerKeyboard);
+                    case AGE_BUTTON: {
+                        return editFieldOfContact(AGE_BUTTON, contact, readerKeyboard);
                     }
-                    case HEIGHT: {
-                        return editFieldOfContact(HEIGHT, contact, readerKeyboard);
+                    case HEIGHT_BUTTON: {
+                        return editFieldOfContact(HEIGHT_BUTTON, contact, readerKeyboard);
                     }
-                    case MARRIED: {
-                        return editFieldOfContact(MARRIED, contact, readerKeyboard);
+                    case MARRIED_BUTTON: {
+                        return editFieldOfContact(MARRIED_BUTTON, contact, readerKeyboard);
                     }
-                    case EXIT: {
+                    case EXIT_BUTTON: {
                         System.out.println("You exited from update mode.");
                         exit = false;
                         break;
@@ -137,27 +153,27 @@ public class ContactServiceImpl extends CommandLineServiceImpl implements Contac
         String tempString = readerKeyboard.readLine();
         CommandLIneService.isCorrectInteger(tempString);
         switch (numberOfField) {
-            case ContactService.NAME: {
+            case ContactService.NAME_BUTTON: {
                 contact.setName(tempString);
                 break;
             }
-            case ContactService.SUR_NAME: {
+            case ContactService.SUR_NAME_BUTTON: {
                 contact.setSurNume(tempString);
                 break;
             }
-            case ContactService.PHONE_NUMBER: {
+            case ContactService.PHONE_NUMBER_BUTTON: {
                 contact.setPhoneNumber(tempString);
                 break;
             }
-            case ContactService.AGE: {
+            case ContactService.AGE_BUTTON: {
                 contact.setAge(Integer.parseInt(tempString));
                 break;
             }
-            case ContactService.HEIGHT: {
-                contact.setHeight(Integer.parseInt(tempString));
+            case ContactService.HEIGHT_BUTTON: {
+                contact.setHeight(Double.parseDouble(tempString));
                 break;
             }
-            case ContactService.MARRIED: {
+            case ContactService.MARRIED_BUTTON: {
                 contact.setMarried(Boolean.parseBoolean(tempString));
                 break;
             }
@@ -185,5 +201,72 @@ public class ContactServiceImpl extends CommandLineServiceImpl implements Contac
     @Override
     public void showAllContacts(BufferedReader readerKeyboard) throws ApplicationException {
         contactDaoImpl.showContacts();
+    }
+
+    void checkCreateAndReadFile() {
+        File backupFile = new File(SET_PATH);
+        try {
+            if (backupFile.createNewFile()) {
+                System.out.println("File not existed. We created empty file 'contacts.txt'");
+            } else {
+                System.out.println("File exist. We read our file and write into storage.");
+                BufferedReader reader = new BufferedReader(new FileReader(backupFile));
+                reader.lines().forEach((String note) -> {
+                            Contact contact = new Contact();
+                            String[] arrayValue = note.split(WORD_SEPARATOR);
+                            for (String value : arrayValue) {
+                                if (value.contains(NAME)) {
+                                    contact.setName(value.split(":")[1].trim());
+                                }
+                                if (value.contains(SUR_NAME)) {
+                                    contact.setSurNume(value.substring(value.indexOf(":") + 1).trim());
+                                }
+                                if (value.contains(PHONE_NUMBER)) {
+                                    contact.setPhoneNumber(value.substring(value.indexOf(":") + 1).trim());
+                                }
+                                if (value.contains(AGE)) {
+                                    contact.setAge(Integer.parseInt(value.substring(value.indexOf(":") + 1).trim()));
+                                }
+                                if (value.contains(HEIGHT)) {
+                                    contact.setHeight(Double.parseDouble(value.substring(value.indexOf(":") + 1).trim()));
+                                }
+                                if (value.contains(MARRIED)) {
+                                    contact.setMarried(Boolean.parseBoolean(value.substring(value.indexOf(":") + 1).trim()));
+                                }
+                                if (value.contains(CREATE_DATE)) {
+                                    contact.setCreateDate(LocalDateTime.parse(value.substring(value.indexOf(":")+1).trim(), DateTimeFormatter.ISO_DATE_TIME));
+                                }
+                            }
+                            try {
+                                contactDaoImpl.saveContact(contact);
+                            } catch (ApplicationException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                );
+                reader.close();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void writeFromSetToFile(Set<Contact> contacts) throws IOException {
+        BufferedWriter out = new BufferedWriter(new FileWriter(SET_PATH));
+        for (Contact contact : contacts) {
+            out.write(NAME + contact.getName() + WORD_SEPARATOR +
+                    SUR_NAME + contact.getSurNume() + WORD_SEPARATOR +
+                    PHONE_NUMBER + contact.getPhoneNumber() + WORD_SEPARATOR +
+                    AGE + contact.getAge() + WORD_SEPARATOR +
+                    HEIGHT + contact.getHeight() + WORD_SEPARATOR +
+                    MARRIED + contact.isMarried() + WORD_SEPARATOR +
+                    CREATE_DATE + contact.getCreateDate());
+            out.newLine();
+        }
+        out.close();
+    }
+
+    public Set<Contact> getStoreForWrite() {
+        return contactDaoImpl.getStorage();
     }
 }

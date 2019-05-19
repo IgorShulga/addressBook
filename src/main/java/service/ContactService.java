@@ -9,13 +9,13 @@ import java.util.Scanner;
 
 public interface ContactService {
 
-    int NAME = 1;
-    int SUR_NAME = 2;
-    int PHONE_NUMBER = 3;
-    int AGE = 4;
-    int HEIGHT = 5;
-    int MARRIED = 6;
-    int EXIT = 0;
+    int NAME_BUTTON = 1;
+    int SUR_NAME_BUTTON = 2;
+    int PHONE_NUMBER_BUTTON = 3;
+    int AGE_BUTTON = 4;
+    int HEIGHT_BUTTON = 5;
+    int MARRIED_BUTTON = 6;
+    int EXIT_BUTTON = 0;
 
     /**
      * This method created new contact in address book.
