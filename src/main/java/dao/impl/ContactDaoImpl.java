@@ -6,15 +6,16 @@ import entity.Contact;
 import exception.ApplicationException;
 import constants.ResponseCode;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.*;
 
 public class ContactDaoImpl implements ContactDao {
 
     private Set<Contact> storage = new TreeSet<>(Comparator.comparing(Contact::getName)
             .thenComparing(Contact::getSurNume)
-            .thenComparing(Contact::getPhoneNumber));
+            .thenComparing(Contact::getPhoneNumber)
+            .thenComparing(Contact::getAge)
+            .thenComparing(Contact::getHeight)
+            .thenComparing(Contact::getCreateDate));
 
     private static int generator = 0;
 
@@ -22,7 +23,6 @@ public class ContactDaoImpl implements ContactDao {
         searchSameContact(contact);
         generator++;
         contact.setId(generator);
-        contact.setCreateDate(LocalDateTime.now());
         storage.add(contact);
     }
 
