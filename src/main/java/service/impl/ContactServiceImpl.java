@@ -29,7 +29,7 @@ public class ContactServiceImpl extends CommandLineServiceImpl implements Contac
     private static final String MARRIED = "Married: ";
     private static final String CREATE_DATE = "Create date: ";
     private static final String WORD_SEPARATOR = "; ";
-    private static final String SET_PATH = "/home/ihor/IdeaProjects/Address_Book/src/main/java/backup/";
+    private static final String SET_PATH = "/home/ihor/IdeaProjects/Address_Book/backup/";
     private static final String FILE_NAME = "contacts_" +
             LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME) + ".txt";
 
