@@ -10,10 +10,6 @@ import service.CommandLIneService;
 import service.ContactService;
 
 import java.io.*;
-import java.nio.file.FileStore;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
@@ -160,7 +156,6 @@ public class ContactServiceImpl extends CommandLineServiceImpl implements Contac
     private Contact editFieldOfContact(int numberOfField, Contact contact, BufferedReader readerKeyboard) throws IOException {
         System.out.println(MassageApp.ENTER_VALUE_FIELD);
         String tempString = readerKeyboard.readLine();
-//        if (!CommandLIneService.isCorrectInteger(tempString)) {
         switch (numberOfField) {
             case ContactService.NAME_BUTTON: {
                 contact.setName(tempString);
@@ -187,11 +182,9 @@ public class ContactServiceImpl extends CommandLineServiceImpl implements Contac
                 break;
             }
         }
-//        }
         System.out.print("Your contact was updated: ");
         return contact;
     }
-
 
     @Override
     public void deleteContact(BufferedReader readerKeyboard) throws ApplicationException, IOException {
@@ -215,20 +208,18 @@ public class ContactServiceImpl extends CommandLineServiceImpl implements Contac
     }
 
     void checkCreateAndReadFile() {
-        File backupFile = new File(SET_PATH + FILE_NAME);
-        try {
-            if (backupFile.createNewFile()) {
-                System.out.println("File not existed. We created empty file 'contacts.txt'");
-            } else {
-                System.out.println("File exist. We read our file and write into storage.");
-                File folder = new File(SET_PATH);
-                File[] files = folder.listFiles();
-                Optional<File> lastModifiedFile = Arrays.stream(files)
-                        .max(Comparator.comparingLong(f -> f.toPath()
-                                .toFile()
-                                .lastModified()));
-                if (lastModifiedFile.isPresent()) {
-                    backupFile = lastModifiedFile.get();
+        File folder = new File(SET_PATH);
+        File[] files = folder.listFiles();
+        Optional<File> lastModifiedFile = Arrays
+                .stream(files)
+                .max(Comparator.comparingLong(f -> f.toPath()
+                        .toFile()
+                        .lastModified()));
+        if (lastModifiedFile.isPresent()) {
+            File backupFile = new File(lastModifiedFile.get().getAbsolutePath());
+            try {
+                if (backupFile.exists()) {
+                    System.out.println("File exist. We read our file and write into storage.");
                     BufferedReader readerFile = new BufferedReader(new FileReader(backupFile));
                     readerFile
                             .lines()
@@ -266,10 +257,12 @@ public class ContactServiceImpl extends CommandLineServiceImpl implements Contac
                                     }
                             );
                     readerFile.close();
+                } else {
+                    System.out.println("File not existed.");
                 }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 
