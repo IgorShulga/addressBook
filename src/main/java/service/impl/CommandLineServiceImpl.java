@@ -11,6 +11,8 @@ public class CommandLineServiceImpl implements CommandLIneService {
     private static final ContactServiceImpl service = new ContactServiceImpl(new ContactDaoImpl());
 
     public static void start() throws IOException {
+
+        service.checkAndCreateDir();
         service.checkCreateAndReadFile();
         CommandLIneService.run(readerKeyboard, service);
         CommandLineServiceImpl.service.writeFromSetToFile(service.getStoreForWrite());

@@ -10,8 +10,15 @@ import service.CommandLIneService;
 import service.ContactService;
 
 import java.io.*;
+import java.nio.file.FileStore;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Optional;
 import java.util.Set;
 
 
@@ -26,11 +33,13 @@ public class ContactServiceImpl extends CommandLineServiceImpl implements Contac
     private static final String MARRIED = "Married: ";
     private static final String CREATE_DATE = "Create date: ";
     private static final String WORD_SEPARATOR = "; ";
-    private static final String SET_PATH = "contacts.txt";
+    private static final String SET_PATH = "/home/ihor/IdeaProjects/Address_Book/src/main/java/backup/";
+    private static final String FILE_NAME = "contacts_" +
+            LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME) + ".txt";
 
     private ContactDaoImpl contactDaoImpl;
 
-    public ContactServiceImpl(ContactDao contactDao) {
+    ContactServiceImpl(ContactDao contactDao) {
         this.contactDaoImpl = (ContactDaoImpl) contactDao;
     }
 
@@ -139,7 +148,7 @@ public class ContactServiceImpl extends CommandLineServiceImpl implements Contac
                         break;
                     }
                     default: {
-                        System.out.println("Sorry. You enter wrong number of menu. We don't change contact. ");
+                        System.out.println(MassageApp.WRONG_DATA_TYPE);
                         throw new ApplicationException(ResponseCode.WRONG_DATA_TYPE);
                     }
                 }
@@ -151,7 +160,7 @@ public class ContactServiceImpl extends CommandLineServiceImpl implements Contac
     private Contact editFieldOfContact(int numberOfField, Contact contact, BufferedReader readerKeyboard) throws IOException {
         System.out.println(MassageApp.ENTER_VALUE_FIELD);
         String tempString = readerKeyboard.readLine();
-        CommandLIneService.isCorrectInteger(tempString);
+//        if (!CommandLIneService.isCorrectInteger(tempString)) {
         switch (numberOfField) {
             case ContactService.NAME_BUTTON: {
                 contact.setName(tempString);
@@ -178,9 +187,11 @@ public class ContactServiceImpl extends CommandLineServiceImpl implements Contac
                 break;
             }
         }
+//        }
         System.out.print("Your contact was updated: ");
         return contact;
     }
+
 
     @Override
     public void deleteContact(BufferedReader readerKeyboard) throws ApplicationException, IOException {
@@ -204,69 +215,88 @@ public class ContactServiceImpl extends CommandLineServiceImpl implements Contac
     }
 
     void checkCreateAndReadFile() {
-        File backupFile = new File(SET_PATH);
+        File backupFile = new File(SET_PATH + FILE_NAME);
         try {
             if (backupFile.createNewFile()) {
                 System.out.println("File not existed. We created empty file 'contacts.txt'");
             } else {
                 System.out.println("File exist. We read our file and write into storage.");
-                BufferedReader reader = new BufferedReader(new FileReader(backupFile));
-                reader.lines().forEach((String note) -> {
-                            Contact contact = new Contact();
-                            String[] arrayValue = note.split(WORD_SEPARATOR);
-                            for (String value : arrayValue) {
-                                if (value.contains(NAME)) {
-                                    contact.setName(value.split(":")[1].trim());
-                                }
-                                if (value.contains(SUR_NAME)) {
-                                    contact.setSurNume(value.substring(value.indexOf(":") + 1).trim());
-                                }
-                                if (value.contains(PHONE_NUMBER)) {
-                                    contact.setPhoneNumber(value.substring(value.indexOf(":") + 1).trim());
-                                }
-                                if (value.contains(AGE)) {
-                                    contact.setAge(Integer.parseInt(value.substring(value.indexOf(":") + 1).trim()));
-                                }
-                                if (value.contains(HEIGHT)) {
-                                    contact.setHeight(Double.parseDouble(value.substring(value.indexOf(":") + 1).trim()));
-                                }
-                                if (value.contains(MARRIED)) {
-                                    contact.setMarried(Boolean.parseBoolean(value.substring(value.indexOf(":") + 1).trim()));
-                                }
-                                if (value.contains(CREATE_DATE)) {
-                                    contact.setCreateDate(LocalDateTime.parse(value.substring(value.indexOf(":")+1).trim(), DateTimeFormatter.ISO_DATE_TIME));
-                                }
-                            }
-                            try {
-                                contactDaoImpl.saveContact(contact);
-                            } catch (ApplicationException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                );
-                reader.close();
+                File folder = new File(SET_PATH);
+                File[] files = folder.listFiles();
+                Optional<File> lastModifiedFile = Arrays.stream(files)
+                        .max(Comparator.comparingLong(f -> f.toPath()
+                                .toFile()
+                                .lastModified()));
+                if (lastModifiedFile.isPresent()) {
+                    backupFile = lastModifiedFile.get();
+                    BufferedReader readerFile = new BufferedReader(new FileReader(backupFile));
+                    readerFile
+                            .lines()
+                            .forEach((String note) -> {
+                                        Contact contact = new Contact();
+                                        String[] arrayValue = note.split(WORD_SEPARATOR);
+                                        for (String value : arrayValue) {
+                                            if (value.contains(NAME)) {
+                                                contact.setName(value.split(":")[1].trim());
+                                            }
+                                            if (value.contains(SUR_NAME)) {
+                                                contact.setSurNume(value.substring(value.indexOf(":") + 1).trim());
+                                            }
+                                            if (value.contains(PHONE_NUMBER)) {
+                                                contact.setPhoneNumber(value.substring(value.indexOf(":") + 1).trim());
+                                            }
+                                            if (value.contains(AGE)) {
+                                                contact.setAge(Integer.parseInt(value.substring(value.indexOf(":") + 1).trim()));
+                                            }
+                                            if (value.contains(HEIGHT)) {
+                                                contact.setHeight(Double.parseDouble(value.substring(value.indexOf(":") + 1).trim()));
+                                            }
+                                            if (value.contains(MARRIED)) {
+                                                contact.setMarried(Boolean.parseBoolean(value.substring(value.indexOf(":") + 1).trim()));
+                                            }
+                                            if (value.contains(CREATE_DATE)) {
+                                                contact.setCreateDate(LocalDateTime.parse(value.substring(value.indexOf(":") + 1).trim(), DateTimeFormatter.ISO_DATE_TIME));
+                                            }
+                                        }
+                                        try {
+                                            contactDaoImpl.saveContact(contact);
+                                        } catch (ApplicationException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                            );
+                    readerFile.close();
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public void writeFromSetToFile(Set<Contact> contacts) throws IOException {
-        BufferedWriter out = new BufferedWriter(new FileWriter(SET_PATH));
+    void writeFromSetToFile(Set<Contact> contacts) throws IOException {
+        BufferedWriter writerToFile = new BufferedWriter(new FileWriter(SET_PATH + FILE_NAME));
         for (Contact contact : contacts) {
-            out.write(NAME + contact.getName() + WORD_SEPARATOR +
+            writerToFile.write(NAME + contact.getName() + WORD_SEPARATOR +
                     SUR_NAME + contact.getSurNume() + WORD_SEPARATOR +
                     PHONE_NUMBER + contact.getPhoneNumber() + WORD_SEPARATOR +
                     AGE + contact.getAge() + WORD_SEPARATOR +
                     HEIGHT + contact.getHeight() + WORD_SEPARATOR +
                     MARRIED + contact.isMarried() + WORD_SEPARATOR +
                     CREATE_DATE + contact.getCreateDate());
-            out.newLine();
+            writerToFile.newLine();
         }
-        out.close();
+        writerToFile.close();
     }
 
-    public Set<Contact> getStoreForWrite() {
+    Set<Contact> getStoreForWrite() {
         return contactDaoImpl.getStorage();
+    }
+
+    void checkAndCreateDir() {
+        if (new File(SET_PATH).mkdirs()) {
+            System.out.println("create dir");
+        } else {
+            System.out.println("dir exist");
+        }
     }
 }
