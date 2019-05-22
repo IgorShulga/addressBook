@@ -29,7 +29,7 @@ public class ContactServiceImpl extends CommandLineServiceImpl implements Contac
     private static final String MARRIED = "Married: ";
     private static final String CREATE_DATE = "Create date: ";
     private static final String WORD_SEPARATOR = "; ";
-    private static final String SET_PATH = "/home/ihor/IdeaProjects/Address_Book/backup/";
+    private static final String SET_PATH = "./backup/";
     private static final String FILE_NAME = "contacts_" +
             LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME) + ".txt";
 
@@ -105,7 +105,7 @@ public class ContactServiceImpl extends CommandLineServiceImpl implements Contac
         throw new ApplicationException(ResponseCode.STORAGE_IS_EMPTY, MassageApp.STORAGE_IS_EMPTY);
     }
 
-    private Contact editContact(BufferedReader readerKeyboard, Contact contact) throws ApplicationException, IOException {
+    private Contact editContact(BufferedReader readerKeyboard, Contact contact) throws IOException, ApplicationException {
         boolean exit = true;
         do {
             System.out.println("Choose field for update: " + "\n" +
@@ -145,7 +145,6 @@ public class ContactServiceImpl extends CommandLineServiceImpl implements Contac
                     }
                     default: {
                         System.out.println(MassageApp.WRONG_DATA_TYPE);
-                        throw new ApplicationException(ResponseCode.WRONG_DATA_TYPE);
                     }
                 }
             }
@@ -153,7 +152,7 @@ public class ContactServiceImpl extends CommandLineServiceImpl implements Contac
         return contact;
     }
 
-    private Contact editFieldOfContact(int numberOfField, Contact contact, BufferedReader readerKeyboard) throws IOException {
+    private Contact editFieldOfContact(int numberOfField, Contact contact, BufferedReader readerKeyboard) throws IOException, ApplicationException {
         System.out.println(MassageApp.ENTER_VALUE_FIELD);
         String tempString = readerKeyboard.readLine();
         switch (numberOfField) {
@@ -170,19 +169,26 @@ public class ContactServiceImpl extends CommandLineServiceImpl implements Contac
                 break;
             }
             case ContactService.AGE_BUTTON: {
-                contact.setAge(Integer.parseInt(tempString));
+                if (CommandLIneService.isCorrectInteger(tempString)) {
+                    contact.setAge(Integer.parseInt(tempString));
+                }
                 break;
             }
             case ContactService.HEIGHT_BUTTON: {
-                contact.setHeight(Double.parseDouble(tempString));
+                if (CommandLIneService.isCorrectDouble(tempString)) {
+                    contact.setHeight(Double.parseDouble(tempString));
+                }
                 break;
             }
             case ContactService.MARRIED_BUTTON: {
                 contact.setMarried(Boolean.parseBoolean(tempString));
                 break;
             }
+            default: {
+                System.out.println("You entered 123");
+            }
         }
-        System.out.print("Your contact was updated: ");
+        System.out.print("Your contact was updated. ");
         return contact;
     }
 

@@ -12,10 +12,7 @@ public class ContactDaoImpl implements ContactDao {
 
     private Set<Contact> storage = new TreeSet<>(Comparator.comparing(Contact::getName)
             .thenComparing(Contact::getSurNume)
-            .thenComparing(Contact::getPhoneNumber)
-            .thenComparing(Contact::getAge)
-            .thenComparing(Contact::getHeight)
-            .thenComparing(Contact::getCreateDate));
+            .thenComparing(Contact::getPhoneNumber) );
 
     private static int generator = 0;
 
