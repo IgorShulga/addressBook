@@ -4,6 +4,7 @@ public class MassageApp {
 
     public static final String ENTER_VALUE_FIELD = "Please enter value this field:";
     public static final String DATA_TYPE_IS_NOT_NUMBER = "You entered wrong char. Please enter number.";
+    public static final String REPEAT = "Repeat please!";
     public static final String THERE_IS_NOT_ID = "There isn't this ID";
     public static final String OBJECT_EXIST = "This object already exists";
     public static final String THIS_DATA_DONT_FIND = "This data don't find in address book.";
