@@ -29,8 +29,15 @@
             </plugin>
         </plugins>
     </build>
-<!--    <dependencies>-->
-<!--        &lt;!&ndash;JUnit Test&ndash;&gt;-->
+
+    <dependencies>
+        <!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>8.0.13</version>
+        </dependency>
+        <!--        &lt;!&ndash;JUnit Test&ndash;&gt;-->
 <!--        <dependency>-->
 <!--            <groupId>junit</groupId>-->
 <!--            <artifactId>junit</artifactId>-->
@@ -43,6 +50,6 @@
 <!--            <artifactId>log4j</artifactId>-->
 <!--            <version>${log4j.version}</version>-->
 <!--        </dependency>-->
-<!--    </dependencies>-->
+    </dependencies>
 
 </project>
