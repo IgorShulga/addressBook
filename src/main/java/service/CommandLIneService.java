@@ -10,6 +10,31 @@ import java.io.IOException;
 
 public interface CommandLIneService {
 
+    String JDBC = "jdbc:mysql:";
+    String HOST_AND_PORT = "//localhost:3306";
+    String NAME_DB = "/address_book";
+    String UNICODE = "useUnicode=true";
+    String JDBC_TIME_ZONE_SHIFT = "useJDBCCompliantTimezoneShift=true";
+    String DATE_TIME = "useLegacyDatetimeCode=false";
+    String SERVICE_TOME_ZONE = "serverTimezone=UTC";
+    String SEPARATOR = "?";
+    String SEPARATOR_AND = "&";
+    String FULL_URL = JDBC + HOST_AND_PORT + NAME_DB + SEPARATOR +
+            UNICODE + SEPARATOR_AND + JDBC_TIME_ZONE_SHIFT +
+            SEPARATOR_AND + DATE_TIME +SEPARATOR_AND + SERVICE_TOME_ZONE;
+    String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS contacts(" +
+            "  `id` INT PRIMARY KEY NOT NULL AUTO_INCREMENT, " +
+            "  `name` VARCHAR(255) NOT NULL, " +
+            "  `sur_name` VARCHAR(255) NULL, " +
+            "  `phone_number` VARCHAR(12) NOT NULL, " +
+            "  `age` INT NULL, " +
+            "  `haight` FLOAT NULL, " +
+            "  `married` BOOLEAN DEFAULT false, " +
+            "  `create_data_time` TIMESTAMP)";
+    String USER = "root";
+    String PASSWORD = "root";
+    String INSERT_CONTACT = "insert into person (name,age,married) VALUES (?,?,?)";
+
     /**
      * Method displayed actions menu.
      */
@@ -28,6 +53,7 @@ public interface CommandLIneService {
      * @param service        pass readerKeyboard for implementation
      */
     static void run(BufferedReader readerKeyboard, ContactServiceImpl service) {
+
         int numberOfMenu;
         boolean exit = true;
         do {
