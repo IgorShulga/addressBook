@@ -5,7 +5,6 @@ import exception.ApplicationException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.Scanner;
 
 public interface ContactService {
 
@@ -28,6 +27,7 @@ public interface ContactService {
      * This method update contact of address book.
      *
      * @param readerKeyboard takes keyboard input
+     * @return
      */
     Contact updateContact(BufferedReader readerKeyboard) throws ApplicationException, IOException;
 

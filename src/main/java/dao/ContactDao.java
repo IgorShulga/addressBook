@@ -27,10 +27,10 @@ public interface ContactDao {
     /**
      * This method update all fields the contact.
      *
-     * @param contactId id of contact
+     * @param contact
      * @return contact of address book
      */
-    Contact updateContactById(int contactId) throws ApplicationException;
+    void updateContactById(Contact contact) throws ApplicationException;
 
     /**
      * This method looking for contact by id.

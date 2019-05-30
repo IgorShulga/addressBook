@@ -26,14 +26,22 @@ public interface CommandLIneService {
             "  `id` INT PRIMARY KEY NOT NULL AUTO_INCREMENT, " +
             "  `name` VARCHAR(255) NOT NULL, " +
             "  `sur_name` VARCHAR(255) NULL, " +
-            "  `phone_number` VARCHAR(12) NOT NULL, " +
+            "  `phone_number` VARCHAR(45) NOT NULL, " +
             "  `age` INT NULL, " +
-            "  `haight` FLOAT NULL, " +
+            "  `height` FLOAT NULL, " +
             "  `married` BOOLEAN DEFAULT false, " +
             "  `create_data_time` TIMESTAMP)";
     String USER = "root";
     String PASSWORD = "root";
-    String INSERT_CONTACT = "insert into person (name,age,married) VALUES (?,?,?)";
+    String INSERT_CONTACT = "insert into contacts " +
+            "(name, sur_name, phone_number, age, height, married, create_data_time) " +
+            "VALUES (?,?,?,?,?,?,?)";
+    String UPDATA_CONTACT = "insert into contacts " +
+            "(name, sur_name, phone_number, age, height, married) " +
+            "VALUES (?,?,?,?,?,?)";
+    String DELETE_CONTACT = "DELETE FROM contacts WHERE id = ?";
+    String GET_CONTACT = "SELECT FROM contacts WHERE id = ?";
+    String SELECT_ALL = "select * from contacts";
 
     /**
      * Method displayed actions menu.
