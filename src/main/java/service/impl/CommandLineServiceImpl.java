@@ -19,10 +19,10 @@ public class CommandLineServiceImpl implements CommandLIneService {
         try (Connection connection = DriverManager.getConnection(FULL_URL, USER, PASSWORD);
              Statement statement = connection.createStatement()) {
             statement.execute(CREATE_TABLE);
-            CommandLIneService.run(readerKeyboard, service);
         } catch (SQLException e) {
-            System.out.println("NO DATABASE CONECTION");
+            System.out.println("NO DATABASE CONNECTION");
             e.printStackTrace();
         }
+        CommandLIneService.run(readerKeyboard, service);
     }
 }

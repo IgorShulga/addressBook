@@ -7,7 +7,7 @@ import java.util.Objects;
 public class Contact {
     private int id;
     private String name;
-    private String surNume;
+    private String surName;
     private String phoneNumber;
     private int age;
     private double height;
@@ -17,10 +17,10 @@ public class Contact {
     public Contact() {
     }
 
-    public Contact(String name, String surNume, String phoneNumber,
+    public Contact(String name, String surName, String phoneNumber,
                    int age, double height, boolean married, LocalDateTime createDate) {
         this.name = name;
-        this.surNume = surNume;
+        this.surName = surName;
         this.phoneNumber = phoneNumber;
         this.age = age;
         this.height = height;
@@ -44,12 +44,12 @@ public class Contact {
         this.name = name;
     }
 
-    public String getSurNume() {
-        return surNume;
+    public String getSurName() {
+        return surName;
     }
 
-    public void setSurNume(String surNume) {
-        this.surNume = surNume;
+    public void setSurName(String surName) {
+        this.surName = surName;
     }
 
     public String getPhoneNumber() {
@@ -100,7 +100,7 @@ public class Contact {
         Contact contact = (Contact) o;
 
         if (!Objects.equals(name, contact.name)) return false;
-        if (!Objects.equals(surNume, contact.surNume)) return false;
+        if (!Objects.equals(surName, contact.surName)) return false;
         return Objects.equals(phoneNumber, contact.phoneNumber);
 
     }
@@ -108,7 +108,7 @@ public class Contact {
     @Override
     public int hashCode() {
         int result = name != null ? name.hashCode() : 0;
-        result = 31 * result + (surNume != null ? surNume.hashCode() : 0);
+        result = 31 * result + (surName != null ? surName.hashCode() : 0);
         result = 31 * result + (phoneNumber != null ? phoneNumber.hashCode() : 0);
         return result;
     }
@@ -118,7 +118,7 @@ public class Contact {
         return "Contact{" +
                 "id = " + id +
                 ", name = '" + name + '\'' +
-                ", surNume = '" + surNume + '\'' +
+                ", surName = '" + surName + '\'' +
                 ", phoneNumber = '" + phoneNumber + '\'' +
                 ", age = " + age +
                 ", height = " + height +
