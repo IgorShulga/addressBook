@@ -8,20 +8,20 @@ import exception.ApplicationException;
 import constants.ResponseCode;
 
 import java.sql.*;
-import java.util.*;
 
-public class ContactDaoImpl implements ContactDao, CommandLIneService {
+public class ContactDaoImpl extends ConnectionDB implements ContactDao, CommandLIneService {
+
+    private Connection connection = ConnectionDB.getConnect();
 
     public void saveContact(Contact contact) {
-        try (Connection connection = DriverManager.getConnection(FULL_URL, USER, PASSWORD);
-             PreparedStatement preparedStatement = connection.prepareStatement(INSERT_CONTACT)) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(INSERT_CONTACT)) {
             preparedStatement.setString(1, contact.getName());
             preparedStatement.setString(2, contact.getSurName());
             preparedStatement.setString(3, contact.getPhoneNumber());
-            preparedStatement.setInt(4, contact.getAge());
             preparedStatement.setDouble(5, contact.getHeight());
             preparedStatement.setBoolean(6, contact.isMarried());
-            preparedStatement.setTimestamp(7, Timestamp.valueOf(contact.getCreateDate()));
+            preparedStatement.setInt(4, contact.getAge());
+            preparedStatement.setString(7, contact.getCreateDate());
             preparedStatement.execute();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -30,8 +30,7 @@ public class ContactDaoImpl implements ContactDao, CommandLIneService {
 
     @Override
     public void deleteContactById(int contactId) {
-        try (Connection connection = DriverManager.getConnection(FULL_URL, USER, PASSWORD);
-             PreparedStatement preparedStatement = connection.prepareStatement(DELETE_CONTACT)) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(DELETE_CONTACT)) {
             preparedStatement.setInt(1, contactId);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
@@ -42,18 +41,19 @@ public class ContactDaoImpl implements ContactDao, CommandLIneService {
     @Override
     public Contact getContactById(int contactId) throws ApplicationException {
         Contact contactForUpdata = null;
-        try (Connection connection = DriverManager.getConnection(FULL_URL, USER, PASSWORD);
-             Statement statement = connection.createStatement()) {
-            statement.execute("select * from contacts where id = 5");
+        try (Statement statement = connection.createStatement()) {
+            statement.execute("select * from contacts where id = " + contactId);
             ResultSet resultSet = statement.getResultSet();
             if (resultSet.next()) {
                 contactForUpdata = new Contact();
+                contactForUpdata.setId(resultSet.getInt(1));
                 contactForUpdata.setName(resultSet.getString(2));
                 contactForUpdata.setSurName(resultSet.getString(3));
                 contactForUpdata.setPhoneNumber(resultSet.getString(4));
                 contactForUpdata.setAge(resultSet.getInt(5));
                 contactForUpdata.setHeight(resultSet.getDouble(6));
                 contactForUpdata.setMarried(resultSet.getBoolean(7));
+                contactForUpdata.setCreateDate(resultSet.getString(8));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -66,8 +66,7 @@ public class ContactDaoImpl implements ContactDao, CommandLIneService {
     }
 
     public void showContacts() {
-        try (Connection connection = DriverManager.getConnection(FULL_URL, USER, PASSWORD);
-             Statement statement = connection.createStatement()) {
+        try (Statement statement = connection.createStatement()) {
             statement.execute(SELECT_ALL);
             ResultSet resultSet = statement.getResultSet();
             while (resultSet.next()) {
@@ -76,10 +75,10 @@ public class ContactDaoImpl implements ContactDao, CommandLIneService {
                                 "NAME: " + resultSet.getString(2) + "  " +
                                 "SURNAME: " + resultSet.getString(3) + "  " +
                                 "PHONE NUMBER: " + resultSet.getString(4) + "  " +
-                                "AGE: " + resultSet.getBoolean(5) + "  " +
+                                "AGE: " + resultSet.getInt(5) + "  " +
                                 "HEIGHT: " + resultSet.getDouble(6) + "  " +
                                 "MARRIED: " + resultSet.getBoolean(7) + "  " +
-                                "CREATE DATE: " + resultSet.getDate(8));
+                                "CREATE DATE: " + resultSet.getString(8));
             }
             System.out.println("That's ALL!");
         } catch (SQLException e) {
@@ -89,14 +88,14 @@ public class ContactDaoImpl implements ContactDao, CommandLIneService {
 
     @Override
     public void updateContactById(Contact contact) {
-        try (Connection connection = DriverManager.getConnection(FULL_URL, USER, PASSWORD);
-             PreparedStatement preparedStatement = connection.prepareStatement(UPDATA_CONTACT)) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(UPDATA_CONTACT)) {
             preparedStatement.setString(1, contact.getName());
             preparedStatement.setString(2, contact.getSurName());
-            preparedStatement.setString(3, contact.getPhoneNumber());
             preparedStatement.setInt(4, contact.getAge());
             preparedStatement.setDouble(5, contact.getHeight());
+            preparedStatement.setString(3, contact.getPhoneNumber());
             preparedStatement.setBoolean(6, contact.isMarried());
+            preparedStatement.setInt(7, contact.getId());
             preparedStatement.execute();
         } catch (SQLException e) {
             e.printStackTrace();

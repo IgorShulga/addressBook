@@ -1,7 +1,6 @@
 package entity;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 public class Contact {
@@ -12,13 +11,13 @@ public class Contact {
     private int age;
     private double height;
     private boolean married;
-    private LocalDateTime createDate;
+    private String createDate;
 
     public Contact() {
     }
 
     public Contact(String name, String surName, String phoneNumber,
-                   int age, double height, boolean married, LocalDateTime createDate) {
+                   int age, double height, boolean married, String createDate) {
         this.name = name;
         this.surName = surName;
         this.phoneNumber = phoneNumber;
@@ -84,11 +83,11 @@ public class Contact {
         this.married = married;
     }
 
-    public LocalDateTime getCreateDate() {
+    public String getCreateDate() {
         return createDate;
     }
 
-    public void setCreateDate(LocalDateTime createDate) {
+    public void setCreateDate(String createDate) {
         this.createDate = createDate;
     }
 
@@ -116,14 +115,14 @@ public class Contact {
     @Override
     public String toString() {
         return "Contact{" +
-                "id = " + id +
-                ", name = '" + name + '\'' +
-                ", surName = '" + surName + '\'' +
-                ", phoneNumber = '" + phoneNumber + '\'' +
-                ", age = " + age +
-                ", height = " + height +
-                ", married = " + married +
-                ", createDate = " + createDate.format(DateTimeFormatter.ofPattern("d MMMM uuuu; HH:mm:ss")) +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", surName='" + surName + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", age=" + age +
+                ", height=" + height +
+                ", married=" + married +
+                ", createDate=" + createDate +
                 '}';
     }
 }

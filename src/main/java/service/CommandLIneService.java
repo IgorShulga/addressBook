@@ -1,47 +1,16 @@
 package service;
 
 import constants.MassageApp;
+import dao.impl.ConnectionDB;
 import exception.ApplicationException;
 import constants.ResponseCode;
 import service.impl.ContactServiceImpl;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.sql.Connection;
 
 public interface CommandLIneService {
-
-    String JDBC = "jdbc:mysql:";
-    String HOST_AND_PORT = "//localhost:3306";
-    String NAME_DB = "/address_book";
-    String UNICODE = "useUnicode=true";
-    String JDBC_TIME_ZONE_SHIFT = "useJDBCCompliantTimezoneShift=true";
-    String DATE_TIME = "useLegacyDatetimeCode=false";
-    String SERVICE_TOME_ZONE = "serverTimezone=UTC";
-    String SEPARATOR = "?";
-    String SEPARATOR_AND = "&";
-    String FULL_URL = JDBC + HOST_AND_PORT + NAME_DB + SEPARATOR +
-            UNICODE + SEPARATOR_AND + JDBC_TIME_ZONE_SHIFT +
-            SEPARATOR_AND + DATE_TIME +SEPARATOR_AND + SERVICE_TOME_ZONE;
-    String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS contacts(" +
-            "  `id` INT PRIMARY KEY NOT NULL AUTO_INCREMENT, " +
-            "  `name` VARCHAR(255) NOT NULL, " +
-            "  `sur_name` VARCHAR(255) NULL, " +
-            "  `phone_number` VARCHAR(45) NOT NULL, " +
-            "  `age` INT NULL, " +
-            "  `height` FLOAT NULL, " +
-            "  `married` BOOLEAN DEFAULT false, " +
-            "  `create_data_time` TIMESTAMP)";
-    String USER = "root";
-    String PASSWORD = "root";
-    String INSERT_CONTACT = "insert into contacts " +
-            "(name, sur_name, phone_number, age, height, married, create_data_time) " +
-            "VALUES (?,?,?,?,?,?,?)";
-    String UPDATA_CONTACT = "insert into contacts " +
-            "(name, sur_name, phone_number, age, height, married) " +
-            "VALUES (?,?,?,?,?,?)";
-    String DELETE_CONTACT = "DELETE FROM contacts WHERE id = ?";
-    String GET_CONTACT = "SELECT FROM contacts WHERE id = ?";
-    String SELECT_ALL = "select * from contacts";
 
     /**
      * Method displayed actions menu.
@@ -92,6 +61,7 @@ public interface CommandLIneService {
                         case 0: {
                             System.out.println("Thank you that used our app. Good bay.");
                             exit = false;
+                            ConnectionDB.closeConection();
                             break;
                         }
                         default: {
