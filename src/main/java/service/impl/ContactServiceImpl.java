@@ -11,6 +11,7 @@ import service.ContactService;
 
 import java.io.*;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class ContactServiceImpl extends CommandLineServiceImpl implements ContactService {
 
@@ -53,7 +54,7 @@ public class ContactServiceImpl extends CommandLineServiceImpl implements Contac
         System.out.println(MassageApp.ENTER_VALUE_FIELD + " Are you married? " +
                 "(Enter '1' if you unmarried and '2' if you married) - ");
         boolean married;
-        String entreString = null;
+        String entreString;
         entreString = readerKeyboard.readLine();
         if (entreString.equals("2")) {
             married = true;
@@ -62,7 +63,7 @@ public class ContactServiceImpl extends CommandLineServiceImpl implements Contac
         }
         contact.setMarried(married);
 
-        contact.setCreateDate(LocalDateTime.now());
+        contact.setCreateDate(LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy hh:mm")));
 
         contactDaoImpl.saveContact(contact);
 
@@ -114,6 +115,7 @@ public class ContactServiceImpl extends CommandLineServiceImpl implements Contac
                         return editFieldOfContact(HEIGHT_BUTTON, contact, readerKeyboard);
                     }
                     case MARRIED_BUTTON: {
+                        System.out.println("If you married enter '2' or 'true' or 'yes' or 'y'.....");
                         return editFieldOfContact(MARRIED_BUTTON, contact, readerKeyboard);
                     }
                     case EXIT_BUTTON: {
@@ -159,11 +161,15 @@ public class ContactServiceImpl extends CommandLineServiceImpl implements Contac
                 break;
             }
             case ContactService.MARRIED_BUTTON: {
-                contact.setMarried(Boolean.parseBoolean(tempString));
+                if (tempString.equals("2") || tempString.equals("true") || tempString.equals("yes") || tempString.equals("y")) {
+                    contact.setMarried(true);
+                } else {
+                    contact.setMarried(false);
+                }
                 break;
             }
             default: {
-                System.out.println("You entered 123");
+                System.out.println(MassageApp.WRONG_DATA_TYPE);
             }
         }
         System.out.print("Your contact was updated. ");
