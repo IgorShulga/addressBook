@@ -10,7 +10,7 @@
 
     <properties>
         <!-- Generic properties -->
-        <java.version>1.8</java.version>
+        <java.version>1.9</java.version>
 <!--        &lt;!&ndash; JUnit test &ndash;&gt;-->
 <!--        <junit.version>4.12</junit.version>-->
 <!--        &lt;!&ndash; Logging &ndash;&gt;-->
