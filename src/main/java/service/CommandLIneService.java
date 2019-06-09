@@ -1,12 +1,14 @@
 package service;
 
 import constants.MassageApp;
+import dao.impl.ConnectionDB;
 import exception.ApplicationException;
 import constants.ResponseCode;
 import service.impl.ContactServiceImpl;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.sql.Connection;
 
 public interface CommandLIneService {
 
@@ -28,6 +30,7 @@ public interface CommandLIneService {
      * @param service        pass readerKeyboard for implementation
      */
     static void run(BufferedReader readerKeyboard, ContactServiceImpl service) {
+
         int numberOfMenu;
         boolean exit = true;
         do {
@@ -58,6 +61,7 @@ public interface CommandLIneService {
                         case 0: {
                             System.out.println("Thank you that used our app. Good bay.");
                             exit = false;
+                            ConnectionDB.closeConection();
                             break;
                         }
                         default: {

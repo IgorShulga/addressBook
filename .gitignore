@@ -7,6 +7,11 @@
 .idea/**/usage.statistics.xml
 .idea/**/dictionaries
 .idea/**/shelf
+.idea/**/compiler.xml
+.idea/**/dataSources.xml
+.idea/**/misc.xml
+.idea/**/modules.xml
+.idea/**/vcs.xml
 
 # Generated files
 .idea/**/contentModel.xml
@@ -66,5 +71,10 @@ fabric.properties
 <<<<<<< HEAD
 .idea/caches/build_file_checksums.ser
 =======
-.idea/caches/build_file_checksums.ser
+.idea/
 >>>>>>> origin/storage-set
+
+backup/
+Буде вилучено .idea/
+Буде вилучено src/test/
+Буде вилучено target/

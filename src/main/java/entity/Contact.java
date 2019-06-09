@@ -1,26 +1,25 @@
 package entity;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 public class Contact {
     private int id;
     private String name;
-    private String surNume;
+    private String surName;
     private String phoneNumber;
     private int age;
     private double height;
     private boolean married;
-    private LocalDateTime createDate;
+    private String createDate;
 
     public Contact() {
     }
 
-    public Contact(String name, String surNume, String phoneNumber,
-                   int age, double height, boolean married, LocalDateTime createDate) {
+    public Contact(String name, String surName, String phoneNumber,
+                   int age, double height, boolean married, String createDate) {
         this.name = name;
-        this.surNume = surNume;
+        this.surName = surName;
         this.phoneNumber = phoneNumber;
         this.age = age;
         this.height = height;
@@ -44,12 +43,12 @@ public class Contact {
         this.name = name;
     }
 
-    public String getSurNume() {
-        return surNume;
+    public String getSurName() {
+        return surName;
     }
 
-    public void setSurNume(String surNume) {
-        this.surNume = surNume;
+    public void setSurName(String surName) {
+        this.surName = surName;
     }
 
     public String getPhoneNumber() {
@@ -84,11 +83,11 @@ public class Contact {
         this.married = married;
     }
 
-    public LocalDateTime getCreateDate() {
+    public String getCreateDate() {
         return createDate;
     }
 
-    public void setCreateDate(LocalDateTime createDate) {
+    public void setCreateDate(String createDate) {
         this.createDate = createDate;
     }
 
@@ -99,44 +98,31 @@ public class Contact {
 
         Contact contact = (Contact) o;
 
-        if (id != contact.id) return false;
-        if (age != contact.age) return false;
-        if (Double.compare(contact.height, height) != 0) return false;
-        if (married != contact.married) return false;
         if (!Objects.equals(name, contact.name)) return false;
-        if (!Objects.equals(surNume, contact.surNume)) return false;
-        if (!Objects.equals(phoneNumber, contact.phoneNumber)) return false;
-        return Objects.equals(createDate, contact.createDate);
+        if (!Objects.equals(surName, contact.surName)) return false;
+        return Objects.equals(phoneNumber, contact.phoneNumber);
 
     }
 
     @Override
     public int hashCode() {
-        int result;
-        long temp;
-        result = id;
-        result = 31 * result + (name != null ? name.hashCode() : 0);
-        result = 31 * result + (surNume != null ? surNume.hashCode() : 0);
+        int result = name != null ? name.hashCode() : 0;
+        result = 31 * result + (surName != null ? surName.hashCode() : 0);
         result = 31 * result + (phoneNumber != null ? phoneNumber.hashCode() : 0);
-        result = 31 * result + age;
-        temp = Double.doubleToLongBits(height);
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
-        result = 31 * result + (married ? 1 : 0);
-        result = 31 * result + (createDate != null ? createDate.hashCode() : 0);
         return result;
     }
 
     @Override
     public String toString() {
         return "Contact{" +
-                "id = " + id +
-                ", name = '" + name + '\'' +
-                ", surNume = '" + surNume + '\'' +
-                ", phoneNumber = '" + phoneNumber + '\'' +
-                ", age = " + age +
-                ", height = " + height +
-                ", married = " + married +
-                ", createDate = " + createDate.format(DateTimeFormatter.ofPattern("d MMMM uuuu; HH:mm:ss")) +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", surName='" + surName + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", age=" + age +
+                ", height=" + height +
+                ", married=" + married +
+                ", createDate=" + createDate +
                 '}';
     }
 }
