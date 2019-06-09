@@ -1,4 +1,4 @@
-# AddressBook
+# Training console application for learn Java Core - AddressBook
 This training console application for learn Java Core.<br>
 TASK: create contact address book and save into storage<br>
 On some stage set task and solved in current branch.<br>
