@@ -22,7 +22,7 @@ public class ContactServiceImpl extends CommandLineServiceImpl implements Contac
     }
 
     @Override
-    public void addContact(BufferedReader readerKeyboard) throws IOException {
+    public void addContact(BufferedReader readerKeyboard) throws IOException, ApplicationException {
         Contact contact = new Contact();
 
         System.out.println(MassageApp.ENTER_VALUE_FIELD + " Name - ");
@@ -177,7 +177,7 @@ public class ContactServiceImpl extends CommandLineServiceImpl implements Contac
     }
 
     @Override
-    public void deleteContact(BufferedReader readerKeyboard) throws IOException {
+    public void deleteContact(BufferedReader readerKeyboard) throws IOException, ApplicationException {
         contactDaoImpl.showContacts();
         System.out.println("Enter please contacts ID what you want delete");
         String stringTemp = readerKeyboard.readLine();
@@ -186,7 +186,7 @@ public class ContactServiceImpl extends CommandLineServiceImpl implements Contac
     }
 
     @Override
-    public void showAllContacts(BufferedReader readerKeyboard) {
+    public void showAllContacts(BufferedReader readerKeyboard) throws ApplicationException {
         contactDaoImpl.showContacts();
     }
 }
