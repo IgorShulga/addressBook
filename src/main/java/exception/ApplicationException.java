@@ -2,6 +2,8 @@ package exception;
 
 import constants.ResponseCode;
 
+import java.util.Iterator;
+
 public class ApplicationException extends Exception {
 
     private String messageOfException;

@@ -3,6 +3,11 @@ package constants;
 public class MassageApp {
 
     public static final String ENTER_VALUE_FIELD = "Please enter value this field:";
+    public static final String FIELD_SAVE_DB = "Failed to save data to database:";
+    public static final String FIELD_DELETE_DB = "Failed to delete data to database:";
+    public static final String FIELD_GET_DB = "Failed to get data to database:";
+    public static final String FIELD_GET_DATA = "Failed to get data from database:";
+    public static final String FIELD_UPDATE_DB = "Failed to update data to database:";
     public static final String DATA_TYPE_IS_NOT_NUMBER = "You entered wrong char. Please enter number.";
     public static final String REPEAT = "Repeat please!";
     public static final String THERE_IS_NOT_ID = "There isn't this ID";

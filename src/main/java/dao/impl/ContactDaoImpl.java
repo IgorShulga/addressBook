@@ -11,9 +11,9 @@ import java.sql.*;
 
 public class ContactDaoImpl extends ConnectionDB implements ContactDao, CommandLIneService {
 
-    private Connection connection = ConnectionDB.getConnect();
+    private static final Connection connection = ConnectionDB.getConnect();
 
-    public void saveContact(Contact contact) {
+    public void saveContact(Contact contact) throws ApplicationException {
         try (PreparedStatement preparedStatement = connection.prepareStatement(INSERT_CONTACT)) {
             preparedStatement.setString(1, contact.getName());
             preparedStatement.setString(2, contact.getSurName());
@@ -24,17 +24,17 @@ public class ContactDaoImpl extends ConnectionDB implements ContactDao, CommandL
             preparedStatement.setString(7, contact.getCreateDate());
             preparedStatement.execute();
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new ApplicationException(ResponseCode.FAILED_SAVE_DB, MassageApp.FIELD_SAVE_DB);
         }
     }
 
     @Override
-    public void deleteContactById(int contactId) {
+    public void deleteContactById(int contactId) throws ApplicationException {
         try (PreparedStatement preparedStatement = connection.prepareStatement(DELETE_CONTACT)) {
             preparedStatement.setInt(1, contactId);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new ApplicationException(ResponseCode.FAILED_DELETE_DB, MassageApp.FIELD_DELETE_DB);
         }
     }
 
@@ -55,17 +55,17 @@ public class ContactDaoImpl extends ConnectionDB implements ContactDao, CommandL
                 contactForUpdata.setMarried(resultSet.getBoolean(7));
                 contactForUpdata.setCreateDate(resultSet.getString(8));
             }
+            if (contactForUpdata == null) {
+                throw new ApplicationException(ResponseCode.NOT_FOUND, MassageApp.THERE_IS_NOT_ID);
+            } else {
+                return contactForUpdata;
+            }
         } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        if (contactForUpdata == null) {
-            throw new ApplicationException(ResponseCode.NOT_FOUND, MassageApp.THERE_IS_NOT_ID);
-        } else {
-            return contactForUpdata;
+            throw new ApplicationException(ResponseCode.FAILED_GET_DB, MassageApp.FIELD_GET_DB);
         }
     }
 
-    public void showContacts() {
+    public void showContacts() throws ApplicationException {
         try (Statement statement = connection.createStatement()) {
             statement.execute(SELECT_ALL);
             ResultSet resultSet = statement.getResultSet();
@@ -82,12 +82,12 @@ public class ContactDaoImpl extends ConnectionDB implements ContactDao, CommandL
             }
             System.out.println("That's ALL!");
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new ApplicationException(ResponseCode.FAILED_GET_DATA, MassageApp.FIELD_GET_DATA);
         }
     }
 
     @Override
-    public void updateContactById(Contact contact) {
+    public void updateContactById(Contact contact) throws ApplicationException {
         try (PreparedStatement preparedStatement = connection.prepareStatement(UPDATA_CONTACT)) {
             preparedStatement.setString(1, contact.getName());
             preparedStatement.setString(2, contact.getSurName());
@@ -98,7 +98,7 @@ public class ContactDaoImpl extends ConnectionDB implements ContactDao, CommandL
             preparedStatement.setInt(7, contact.getId());
             preparedStatement.execute();
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new ApplicationException(ResponseCode.FAILED_UPDATE_DB, MassageApp.FIELD_UPDATE_DB);
         }
     }
 }
